@@ -1,0 +1,1376 @@
+# SOCPIT_[2026.MD]
+# ЕДИНЫЙ ДОКУМЕНТ ДЛЯ ИИ АГЕНТА ОРКЕСТРАТОРА
+
+**Версия:** 1.0  
+**Дата создания:** 09 октября 2026  
+**Владелец:** NEO  
+**Исполнитель:** ИИ Агент Оркестратор (CODEX / CHATGPT / ASTRA 6.0)  
+**Целевой проект:** SOCpit 2  
+**Статус:** Глубокий анализ и оркестрация  
+
+---
+
+## 📋 СТРУКТУРА ДОКУМЕНТА
+
+```
+SOCPIT_[2026.MD]
+├── CONTEXT (Контекст)
+│   ├── Информация о пользователе и ПК
+│   ├── Инфраструктура NEO
+│   ├── Связанные проекты (MATRIX, SOCpit, WORLDOFTELEGRAM.AI)
+│   ├── Текущее состояние репозиториев
+│   └── Целевая архитектура SOCpit
+│
+├── PROMPT (Задание)
+│   ├── Главная команда для ИИ Оркестратора
+│   ├── Цели и задачи
+│   ├── Ограничения и требования
+│   └── Критерии приемки
+│
+└── ПОШАГОВЫЙ ПЛАН РАБОТЫ
+    ├── Фаза A: Анализ иDiscovery
+    ├── Фаза B: Глубокий аудит
+    ├── Фаза C: Создание baseline
+    ├── Фаза D: Реализация SOCpit V2
+    ├── Фаза E: Тестирование и валидация
+    ├── Фаза F: Сборка и публикация
+    ├── Фаза G: Загрузка в репозиторий
+    └── Фаза H: Финальный отчет
+```
+
+---
+
+# 🔍 CONTEXT (КОНТЕКСТ)
+
+## 1.1 Информация о пользователе и ПК
+
+### О пользователе:
+- **Имя:** NEO
+- **Роль:** Владелец проекта, соло-разработчик
+- **Инфраструктура:** ПК, iPhone, Android, четыре USB устройства, TP-Link router, Samsung TV, Алиса, VPS для VPN/агентов
+- **Рабочая среда:** Windows ПК с .NET 8 SDK, VS Code, GitHub
+- **ИИ сервисы:** OpenRouter, n8n, VPN, различные ИИ ассистенты
+
+### О ПК пользователя:
+- **Операционная система:** Windows (точная версия неизвестна, предполагается Windows 10/11 x64)
+- **Архитектура:** x64
+- **Разработка:** .NET 8 LTS установлен
+- **Права:** Обычный пользователь (не admin по умолчанию)
+- **Хранение данных:** `%LOCALAPPDATA%\MATRIX` для текущих данных
+- **Целевой путь:** `C:\MATRIX-FINAL` (опционально)
+
+### Безопасность ПК:
+- **Требования:** Все проверки безопасности должны выполняться на ПК пользователя
+- **Статусы:** PASS-1 (моя проверка пройдена, нужна финальная проверка на ПК), PASS-2 (частично), PASS-3 (не пройдена)
+- **Примечание:** В песочнице все работает исправно, но финальная проверка должна быть на ПК NEO
+
+---
+
+## 1.2 Инфраструктура NEO
+
+### Активы NEO:
+1. **Устройства:**
+   - ПК (основной рабочий компьютер)
+   - iPhone
+   - Android устройство
+   - Samsung TV
+
+2. **Сетевое оборудование:**
+   - TP-Link router
+   - VPS для VPN/агентов
+
+3. **ПО и сервисы:**
+   - VS Code
+   - GitHub
+   - OpenRouter
+   - n8n
+   - VPN
+   - Алиса (голосовой ассистент)
+   - Различные ИИ сервисы
+
+4. **Проекты:**
+   - MATRIX (центр управления инфраструктурой)
+   - SOCpit (система безопасности)
+   - WORLDOFTELEGRAM.AI
+
+### Trust Zones:
+- **Internal:** Локальная сеть NEO
+- **Public:** Общедоступные ресурсы
+- **Sensitive:** Конфиденциальные данные
+
+---
+
+## 1.3 Связанные проекты
+
+### MATRIX Project
+- **Репозиторий:** [aifirsts/NEOV2](https://github.com/aifirsts/NEOV2)
+- **Версия:** 3.0.0 (финальная)
+- **Статус:** Реализован и опубликован
+- **Архитектура:** C# / WPF / MVVM
+- **Компоненты:**
+  - MATRIX.Core (доменные модели, SecurityPolicy, GraphValidator)
+  - MATRIX.Application (WorkspaceSession, WorkspaceEditor, CRUD)
+  - MATRIX.Storage (generation-based storage, SHA-256, CURRENT pointer, cooperative lease)
+  - MATRIX.Import (Import/Export: preview → confirmation → commit)
+  - MATRIX.App (WPF UI: дерево, граф, карточка, события)
+- **Функционал:**
+  - Управление инфраструктурой
+  - Визуализация связей
+  - Хранение с версиями
+  - Импорт/экспорт
+  - Полный CRUD для всех сущностей
+
+### SOCpit Project
+- **Описание:** Система безопасности и аудита
+- **Связь с MATRIX:** Использует аналогичные принципы и архитектуру
+- **Цель:** Создание независимой системы безопасности с возможностью интеграции
+- **Статус:** Требует создания на основе MATRIX V2/V3
+
+### WORLDOFTELEGRAM.AI
+- **Описание:** Внешний проект, связанный с Telegram сценариями
+- **Статус:** Исторический источник принципов, не часть текущей задачи
+
+---
+
+## 1.4 Текущее состояние репозиториев
+
+### aifirsts Organization (GitHub)
+| Репозиторий | Описание | Статус | Ссылка |
+|------------|----------|--------|-------|
+| 01 | Исходный репозиторий | Пустой (только README.md) | [link](https://github.com/aifirsts/01) |
+| MATRIX2 | Резервный репозиторий | Пустой (только README.md) | [link](https://github.com/aifirsts/MATRIX2) |
+| NEOV2 | Основной репозиторий MATRIX V2/V3 | Активный, содержит полный проект | [link](https://github.com/aifirsts/NEOV2) |
+| SOCpit | Целевой репозиторий | **НЕ СУЩЕСТВУЕТ** - нужно создать | - |
+
+### NEOV2 Contents (MATRIX V3):
+```
+NEOV2/
+├── FINAL.MD                         # Техническое задание V2
+├── PROMPT_V3_PC.MD                 # Задание для V3
+├── README.md                        # Документация V3
+├── CHANGELOG.md                     # История изменений
+├── SECURITY.md                      # Политика безопасности
+├── LICENSE                          # Лицензия
+├── MATRIX.sln                      # Solution file
+├── Directory.Build.props            # Конфигурация сборки
+├── global.json                      # SDK конфигурация
+├── src/
+│   ├── MATRIX.Core/                 # Доменные модели
+│   │   ├── Domain.cs                # Сущности (Node, Edge, Project, Task, Control, Evidence, Finding, Runbook, AuditEvent, UserStatement)
+│   │   └── SecurityPolicy.cs        # Политика безопасности (ADR-V2-SEC-001)
+│   ├── MATRIX.Application/           # Прикладная логика
+│   │   └── WorkspaceServices.cs     # Сервисы рабочей области
+│   ├── MATRIX.Storage/              # Хранение
+│   │   └── WorkspaceStore.cs        # Хранилище с версиями
+│   ├── MATRIX.Import/               # Импорт/экспорт
+│   │   └── ImportExportService.cs   # Сервис импорта/экспорта
+│   └── MATRIX.App/                  # WPF приложение
+│       ├── App.xaml.cs              # Точка входа
+│       ├── MainWindow.xaml.cs       # Главное окно
+│       ├── MainWindow.xaml          # XAML разметка
+│       ├── ViewModels/
+│       │   └── MainViewModel.cs     # ViewModel
+│       └── Views/
+│           ├── EditFormsView.xaml.cs # Формы редактирования
+│           ├── EditFormsView.xaml    # XAML формы
+│           ├── GraphCanvasView.xaml.cs # Визуализация графа
+│           └── GraphCanvasView.xaml  # XAML граф
+├── tests/
+│   └── (тестовые проекты)
+├── schemas/
+│   ├── matrix-workspace-v1.schema.json # Схема рабочей области
+│   ├── execution-status.schema.json   # Схема статусов
+│   └── release-evidence.schema.json   # Схема доказательств релиза
+├── docs/
+│   ├── ARCHITECTURE.md              # Архитектура
+│   ├── DATA-MODEL.md                # Модель данных
+│   ├── V1-V2-CHANGE-MATRIX.md       # Изменения V1→V2
+│   ├── DECISION-LOG.md              # Журнал решений
+│   ├── NEO-ACTIONS.md               # Действия владельца
+│   ├── RELEASE-CONTRACT.md          # Контракт релиза
+│   ├── SOURCE-REGISTER.md           # Реестр источников
+│   ├── STORAGE-PROTOCOL.md          # Протокол хранения
+│   ├── MIGRATION.md                  # Миграция
+│   └── adr/
+│       ├── ADR-V2-SDK-001.md       # ADR: .NET 8 LTS
+│       ├── ADR-V2-SEC-001.md       # ADR: Консервативная безопасность
+│       └── ADR-V2-STORE-001.md      # ADR: Хранение с версиями
+├── audit/
+│   ├── FINAL.MD                     # Финальный отчет V2
+│   ├── FINAL-REPORT-V3.md           # Финальный отчет V3
+│   ├── AUDIT-REPORT-V2.1-FINAL.md   # Аудит отчет
+│   ├── STATUS.json                  # Статусы gates
+│   ├── INVENTORY.json               # Инвентаризация
+│   ├── SOURCE-MAP.json              # Карта источников
+│   ├── FINDINGS.json                # Находки аудита
+│   └── COLLISIONS.json              # Коллизии
+├── tools/
+│   └── test_matrix_v2.py            # Python тесты
+├── scripts/
+│   ├── build-test.ps1               # Сборка и тестирование
+│   ├── publish.ps1                  # Публикация
+│   ├── package.ps1                  # Упаковка
+│   └── verify-artifacts.ps1         # Проверка артефактов
+├── fixtures/                        # Тестовые данные
+├── evidence/                        # Доказательства
+└── .github/workflows/
+    ├── build-test.yml               # CI: сборка и тесты
+    └── release-candidate.yml        # CI: кандидат релиза
+```
+
+### Текущие метрики NEOV2:
+- **C# проекты:** 5 основных + 7 тестовых
+- **Python тесты:** 50 тестов (T01-T28 + schema/fixture validation)
+- **Схемы JSON:** 3 схемы
+- **ADR:** 3 документа
+- **Версия:** 3.0.0
+- **Статус CI:** Green (windows-latest)
+- **Release:** v3.0.0 (prerelease)
+
+---
+
+## 1.5 Целевая архитектура SOCpit
+
+### Описание SOCpit:
+SOCpit - это система безопасности и аудита, предназначенная для:
+1. **Мониторинга безопасности** инфраструктуры NEO
+2. **Аудита** текущего состояния безопасности
+3. **Управления доказательствами** (evidence-based security)
+4. **Выявления угроз** и уязвимостей
+5. **Управления инцидентами** безопасности
+
+### Архитектурные принципы:
+1. **Наследуемость от MATRIX:** Использовать проверенные решения из MATRIX V3
+2. **Модульность:** Независимые компоненты с четкими интерфейсами
+3. **Безопасность:** Консервативная политика безопасности (ADR-V2-SEC-001)
+4. **Аудируемость:** Полная история всех изменений
+5. **Совместимость:** Работа с существующими данными MATRIX
+
+### Компоненты SOCpit:
+```
+SOCpit/
+├── SOCpit.Core/                     # Ядро безопасности
+│   ├── SecurityModels.cs           # Модели безопасности
+│   ├── ThreatDetection.cs          # Обнаружение угроз
+│   ├── VulnerabilityScanner.cs     # Сканирование уязвимостей
+│   └── EvidenceManager.cs          # Управление доказательствами
+├── SOCpit.Application/              # Прикладная логика
+│   ├── SecurityServices.cs         # Сервисы безопасности
+│   ├── AuditServices.cs             # Сервисы аудита
+│   └── IncidentManager.cs           # Управление инцидентами
+├── SOCpit.Storage/                  # Хранение
+│   ├── SecurityStore.cs            # Хранилище безопасности
+│   └── AuditStore.cs                # Хранилище аудита
+├── SOCpit.Import/                   # Импорт/экспорт
+│   └── SecurityImportExport.cs      # Импорт/экспорт безопасности
+├── SOCpit.App/                      # UI приложение
+│   ├── SecurityDashboard.xaml      # Дашборд безопасности
+│   ├── ThreatView.xaml              # Просмотр угроз
+│   ├── VulnerabilityView.xaml       # Просмотр уязвимостей
+│   ├── EvidenceView.xaml            # Просмотр доказательств
+│   └── IncidentView.xaml             # Просмотр инцидентов
+└── SOCpit.Tests/                    # Тесты
+```
+
+---
+
+# 🎯 PROMPT (ЗАДАНИЕ ДЛЯ ИИ АГЕНТА ОРКЕСТРАТОРА)
+
+## 2.1 Главная команда
+
+> **ВЫПОЛНИТЬ В РАМКАХ ОДНОЙ ЗАДАЧИ:**
+> 
+> Прочитай этот документ целиком. Проведи глубокий анализ всех доступных источников, проектов MATRIX и SOCpit. Создай полноценный проект SOCpit 2 с нуля или на базе MATRIX V3. Собери все необходимые релизы. Упакуй весь проект в ZIP архив для скачивания. Создай финальный документ SOCpit_2026_[FINAL.MD] для пользователя NEO.
+
+**КЛЮЧЕВЫЕ ПРИНЦИПЫ:**
+- Работай как автономный руководитель проекта
+- Принимай технические решения самостоятельно
+- Не останавливайся на косметических согласованиях
+- Используй PASS-1, PASS-2, PASS-3 для статусов проверок
+- Не назначай PASS, если проверка не пройдена на ПК NEO
+- Все работает в песочнице, но финальная проверка на ПК пользователя
+
+---
+
+## 2.2 Цели проекта SOCpit 2
+
+### Основные цели:
+1. ✅ **Создать SOCpit 2** - полноценную систему безопасности на базе MATRIX V3
+2. ✅ **Реализовать все компоненты** - Core, Application, Storage, Import, App
+3. ✅ **Собрать все релизы** - Alpha, Beta, Release Candidate, Final
+4. ✅ **Создать SOCpit.exe** - рабочий Windows executable
+5. ✅ **Упаковать проект** - ZIP архив со всеми файлами
+6. ✅ **Создать документацию** - SOCpit_2026_[FINAL.MD]
+
+### Дополнительные цели:
+1. Интеграция с MATRIX V3
+2. Поддержка всех сущностей безопасности
+3. Визуализация угроз и уязвимостей
+4. Автоматизированное тестирование
+5. CI/CD конвейер
+
+---
+
+## 2.3 Ограничения и требования
+
+### Технические требования:
+- **Платформа:** Windows x64
+- **Язык:** C# 10+ (использовать C# 12 если возможно)
+- **Framework:** .NET 8 LTS (как в MATRIX)
+- **UI:** WPF / MVVM (как в MATRIX)
+- **Архитектура:** Layered architecture (как в MATRIX)
+- **Хранение:** Generation-based storage с SHA-256
+- **Безопасность:** Консервативная политика (ADR-V2-SEC-001)
+
+### Функциональные требования:
+- Поддержка всех сущностей MATRIX (Node, Edge, Project, Task, Control, Evidence, Finding, Runbook, AuditEvent, UserStatement)
+- Дополнительные сущности безопасности:
+  - Threat (угроза)
+  - Vulnerability (уязвимость)
+  - SecurityIncident (инцидент безопасности)
+  - SecurityControl (контроль безопасности)
+  - ComplianceCheck (проверка соответствия)
+- Визуализация:
+  - Дашборд безопасности
+  - Граф угроз
+  - Карточки сущностей
+  - Дерево навигации
+- Импорт/Экспорт:
+  - Импорт из MATRIX V3
+  - Экспорт в SOCpit формат
+  - Preview → Confirmation → Commit
+
+### Нефункциональные требования:
+- **Производительность:** Быстрая загрузка и работа
+- **Надежность:** Устойчивость к ошибкам
+- **Безопасность:** Защита от утечек данных
+- **Аудируемость:** Полная история изменений
+- **Совместимость:** Работа с MATRIX V3 данными
+
+### Ограничения:
+- ❌ Нет доступа к реальному ПК NEO (использовать PASS-1 для финальной проверки)
+- ❌ Нет доступа к Windows SDK в песочнице (использовать CI для сборки)
+- ❌ Нет force-push в защищенные ветки
+- ❌ Нет публикации secrets/private данных
+- ❌ Нет изменения живых данных NEO без разрешения
+
+---
+
+## 2.4 Критерии приемки
+
+### Для SOCpit.exe:
+- [ ] Запускается на Windows без SDK/admin
+- [ ] Данные хранятся в `%LOCALAPPDATA%\SOCpit`
+- [ ] Все функции работают (CRUD, визуализация, импорт/экспорт)
+- [ ] Проходит все тесты
+- [ ] Self-contained (одним файлом или с минимальными зависимостями)
+
+### Для ZIP архива:
+- [ ] Содержит все исходные файлы
+- [ ] Содержит все собранные бинарники
+- [ ] Содержит документацию
+- [ ] Содержит SHA256SUMS.txt
+- [ ] Содержит VERSION.json
+
+### Для SOCpit_2026_[FINAL.MD]:
+- [ ] Содержит полный контекст
+- [ ] Содержит все PASS статусы
+- [ ] Содержит инструкции для NEO
+- [ ] Содержит карту источников
+- [ ] Содержит отчет о проверках
+
+---
+
+# 📋 ПОШАГОВЫЙ ПЛАН РАБОТЫ ДЛЯ ИИ АГЕНТА ОРКЕСТРАТОРА
+
+## 3.1 Общий алгоритм
+
+```
+НАЧАЛО
+  │
+  ▼
+Фаза A: Анализ и Discovery (1-2 часа)
+  │
+  ▼
+Фаза B: Глубокий аудит (2-3 часа)
+  │
+  ▼
+Фаза C: Создание Baseline (1-2 часа)
+  │
+  ▼
+Фаза D: Реализация SOCpit V2 (3-4 часа)
+  │
+  ▼
+Фаза E: Тестирование и валидация (2-3 часа)
+  │
+  ▼
+Фаза F: Сборка и публикация (1-2 часа)
+  │
+  ▼
+Фаза G: Загрузка в репозиторий (1 час)
+  │
+  ▼
+Фаза H: Финальный отчет (1 час)
+  │
+  ▼
+КОНЕЦ: SOCpit_2026_[FINAL.MD] + ZIP архив
+```
+
+**Общее время:** ~14-18 часов (в песочнице может быть быстрее)
+
+---
+
+## 3.2 Фаза A: Анализ и Discovery
+
+### Цель:
+Полное понимание всех доступных источников, инструментов и возможностей
+
+### Задачи:
+
+#### A.1 Определение возможностей среды
+- [ ] **PASS-1** Проверить доступные инструменты (Git, dotnet, PowerShell, Python)
+- [ ] **PASS-1** Проверить доступ к GitHub API
+- [ ] **PASS-1** Проверить возможность создания репозиториев
+- [ ] **PASS-1** Проверить доступ к Windows runner (CI)
+- [ ] **PASS-F** Проверить доступ к Windows SDK в песочнице (ожидаемо недоступно)
+
+**Команды для проверки:**
+```bash
+git --version
+dotnet --version
+python3 --version
+curl --version
+```
+
+#### A.2 Исследование репозиториев
+- [ ] **PASS-1** Клонировать aifirsts/NEOV2
+- [ ] **PASS-1** Прочитать все файлы NEOV2
+- [ ] **PASS-1** Проанализировать архитектуру MATRIX V3
+- [ ] **PASS-1** Извлечь все модели данных
+- [ ] **PASS-1** Извлечь все ADR решения
+- [ ] **PASS-F** Проверить существование SOCpit репозитория (ожидаемо не существует)
+
+**Исходные данные:**
+- NEOV2 содержит полный MATRIX V3 проект
+- MATRIX2 и 01 пустые
+- SOCpit репозиторий нужно создать
+
+#### A.3 Карта файлов и источников
+- [ ] **PASS-1** Составить полный inventory всех файлов NEOV2
+- [ ] **PASS-1** Классифицировать файлы по категориям
+- [ ] **PASS-1** Определить зависимости между файлами
+- [ ] **PASS-1** Создать SOURCE-MAP.json для SOCpit
+
+**Классификация:**
+```
+NEOV2 Files:
+├── Source Code (C#): 12 файлов
+├── Tests (C#): ~25+ файлов
+├── Tests (Python): 1 файл (50 тестов)
+├── Schemas (JSON): 3 файла
+├── Documentation (MD): 15+ файлов
+├── Scripts (PS1): 4 файла
+├── Configuration: 3 файла
+└── Other: fixtures, evidence, etc.
+```
+
+#### A.4 Определение целевой структуры
+- [ ] **PASS-1** Создать целевую структуру для SOCpit
+- [ ] **PASS-1** Определить компоненты SOCpit
+- [ ] **PASS-1** Создать план миграции из MATRIX
+
+**Целевая структура SOCpit:**
+```
+SOCpit/
+├── src/
+│   ├── SOCpit.Core/
+│   ├── SOCpit.Application/
+│   ├── SOCpit.Storage/
+│   ├── SOCpit.Import/
+│   └── SOCpit.App/
+├── tests/
+├── schemas/
+├── docs/
+├── scripts/
+├── tools/
+└── .github/workflows/
+```
+
+---
+
+## 3.3 Фаза B: Глубокий аудит
+
+### Цель:
+Полный аудит всех доступных источников и выявление всех дефектов
+
+### Задачи:
+
+#### B.1 Аудит MATRIX V3
+- [ ] **PASS-1** Проанализировать Domain.cs (462 строки)
+- [ ] **PASS-1** Проанализировать SecurityPolicy.cs
+- [ ] **PASS-1** Проанализировать GraphValidator
+- [ ] **PASS-1** Проанализировать WorkspaceStore
+- [ ] **PASS-1** Проанализировать ImportExportService
+- [ ] **PASS-1** Проанализировать WPF компоненты
+
+**Выявленные сильные стороны MATRIX:**
+✅ Полная модель данных (Node, Edge, Project, Task, Control, Evidence, Finding, Runbook, AuditEvent, UserStatement)
+✅ Консервативная политика безопасности (ADR-V2-SEC-001)
+✅ Валидация графа (циклы, дубликаты, ссылочная целостность)
+✅ Хранение с версиями (generations, SHA-256, CURRENT pointer)
+✅ Импорт/экспорт с preview → confirmation → commit
+✅ WPF UI с MVVM (дерево, граф, карточка, события)
+✅ Полный CRUD для всех сущностей
+✅ 50 Python тестов
+✅ CI/CD конвейер
+
+#### B.2 Аудит схем JSON
+- [ ] **PASS-1** Проанализировать matrix-workspace-v1.schema.json
+- [ ] **PASS-1** Проанализировать execution-status.schema.json
+- [ ] **PASS-1** Проанализировать release-evidence.schema.json
+- [ ] **PASS-1** Выявить все ограничения и валидации
+
+**Ограничения схем:**
+- Max JSON depth: 32
+- Max input size: 16 MiB
+- Max tokens: 1,000,000
+- UTC timestamps, max 7 fractional digits
+- Strict integer encoding
+- Repo URL: HTTPS github.com only
+
+#### B.3 Аудит тестов
+- [ ] **PASS-1** Проанализировать test_matrix_v2.py (50 тестов)
+- [ ] **PASS-1** Определить покрытие тестами
+- [ ] **PASS-1** Выявить недостающие тесты
+
+**Покрытие тестами (T01-T28):**
+- T01-T06: Domain models
+- T07-T09: Security policy
+- T10-T13: Import/export
+- T14-T18: Storage/recovery
+- T20-T21: UI/UX
+- T22: CRUD operations
+- T23-T28: Various scenarios
+
+#### B.4 Аудит документации
+- [ ] **PASS-1** Проанализировать FINAL.MD
+- [ ] **PASS-1** Проанализировать PROMPT_V3_PC.MD
+- [ ] **PASS-1** Проанализировать все ADR документы
+- [ ] **PASS-1** Проанализировать NEO-ACTIONS.md
+
+**Ключевые решения из ADR:**
+- ADR-V2-SDK-001: .NET 8 LTS
+- ADR-V2-SEC-001: Conservative security computation
+- ADR-V2-STORE-001: Generation-based storage
+
+---
+
+## 3.4 Фаза C: Создание Baseline
+
+### Цель:
+Создать рабочее дерево SOCpit на основе MATRIX V3
+
+### Задачи:
+
+#### C.1 Создание репозитория SOCpit
+- [ ] **PASS-1** Создать репозиторий aifirsts/SOCpit на GitHub
+- [ ] **PASS-1** Инициализировать репозиторий с README.md
+- [ ] **PASS-1** Настроить .gitignore
+- [ ] **PASS-1** Создать LICENSE
+
+**Команды:**
+```bash
+gh repo create aifirsts/SOCpit --public --clone
+cd SOCpit
+echo "# SOCpit - Security Operations Center" > README.md
+echo "MATRIX.exe" >> .gitignore
+echo "bin/" >> .gitignore
+echo "obj/" >> .gitignore
+echo "*.user" >> .gitignore
+echo "*.suo" >> .gitignore
+```
+
+#### C.2 Копирование и адаптация MATRIX
+- [ ] **PASS-1** Скопировать структуру MATRIX в SOCpit
+- [ ] **PASS-1** Адаптировать namespace с MATRIX на SOCpit
+- [ ] **PASS-1** Обновить все ссылки и зависимости
+
+**Адаптации:**
+```
+MATRIX.Core → SOCpit.Core
+MATRIX.Application → SOCpit.Application
+MATRIX.Storage → SOCpit.Storage
+MATRIX.Import → SOCpit.Import
+MATRIX.App → SOCpit.App
+```
+
+#### C.3 Создание baseline сущностей безопасности
+- [ ] **PASS-1** Создать Threat.cs (модель угрозы)
+- [ ] **PASS-1** Создать Vulnerability.cs (модель уязвимости)
+- [ ] **PASS-1** Создать SecurityIncident.cs (модель инцидента)
+- [ ] **PASS-1** Создать SecurityControl.cs (модель контроля)
+- [ ] **PASS-1** Создать ComplianceCheck.cs (модель проверки соответствия)
+
+**Модель Threat:**
+```csharp
+public sealed class Threat
+{
+    public required string Id { get; init; }
+    public required string Name { get; init; }
+    public required string Description { get; init; }
+    public required ThreatSeverity Severity { get; init; }
+    public required ThreatStatus Status { get; init; }
+    public required string TargetId { get; init; }  // Ссылка на Node
+    public required DateTimeOffset DetectedAt { get; init; }
+    public required string Source { get; init; }
+    public required IReadOnlyList<string> Tags { get; init; }
+}
+```
+
+**Модель Vulnerability:**
+```csharp
+public sealed class Vulnerability
+{
+    public required string Id { get; init; }
+    public required string CveId { get; init; }  // CVE-2026-XXXX
+    public required string Name { get; init; }
+    public required string Description { get; init; }
+    public required VulnerabilitySeverity Severity { get; init; }
+    public required string TargetId { get; init; }
+    public required DateTimeOffset PublishedAt { get; init; }
+    public required string FixAvailable { get; init; }
+}
+```
+
+#### C.4 Адаптация SecurityPolicy
+- [ ] **PASS-1** Расширить SecurityPolicy для SOCpit
+- [ ] **PASS-1** Добавить вычисление статуса угроз
+- [ ] **PASS-1** Добавить вычисление статуса уязвимостей
+- [ ] **PASS-1** Добавить вычисление общего статуса безопасности
+
+**Расширенная SecurityPolicy:**
+```csharp
+public static class SecurityPolicy
+{
+    // Существующие методы...
+    
+    // Новые методы для SOCpit
+    public static ThreatStatus ComputeThreatStatus(Threat threat, IReadOnlyList<Evidence> evidence)
+    public static VulnerabilityStatus ComputeVulnerabilityStatus(Vulnerability vulnerability)
+    public static SecurityScore ComputeOverallSecurityScore(
+        IReadOnlyList<Node> nodes,
+        IReadOnlyList<Threat> threats,
+        IReadOnlyList<Vulnerability> vulnerabilities,
+        IReadOnlyList<Control> controls,
+        IReadOnlyList<Evidence> evidence)
+}
+```
+
+#### C.5 Создание baseline UI
+- [ ] **PASS-1** Адаптировать MainWindow.xaml для SOCpit
+- [ ] **PASS-1** Создать SecurityDashboard.xaml
+- [ ] **PASS-1** Создать ThreatView.xaml
+- [ ] **PASS-1** Создать VulnerabilityView.xaml
+- [ ] **PASS-1** Обновить все ViewModel
+
+---
+
+## 3.5 Фаза D: Реализация SOCpit V2
+
+### Цель:
+Полная реализация всех компонентов SOCpit
+
+### Задачи:
+
+#### D.1 Реализация ядра (SOCpit.Core)
+- [ ] **PASS-1** Реализовать все модели данных
+- [ ] **PASS-1** Реализовать ThreatDetection
+- [ ] **PASS-1** Реализовать VulnerabilityScanner
+- [ ] **PASS-1** Реализовать SecurityValidator
+- [ ] **PASS-1** Реализовать ComplianceChecker
+
+**ThreatDetection.cs:**
+```csharp
+public static class ThreatDetection
+{
+    public static IReadOnlyList<Threat> DetectThreats(
+        IReadOnlyList<Node> nodes,
+        IReadOnlyList<Edge> edges,
+        IReadOnlyList<Control> controls,
+        IReadOnlyList<Evidence> evidence)
+    {
+        // Логика обнаружения угроз на основе:
+        // 1. Отсутствующие контролы
+        // 2. Просроченные доказательства
+        // 3. Небезопасные связи
+        // 4. Уязвимые узлы
+    }
+}
+```
+
+#### D.2 Реализация хранилища (SOCpit.Storage)
+- [ ] **PASS-1** Адаптировать WorkspaceStore для SOCpit
+- [ ] **PASS-1** Добавить хранение угроз
+- [ ] **PASS-1** Добавить хранение уязвимостей
+- [ ] **PASS-1** Добавить хранение инцидентов
+- [ ] **PASS-1** Добавить индексацию для быстрого поиска
+
+**SOCpitStore.cs:**
+```csharp
+public sealed class SOCpitStore
+{
+    public Workspace LoadWorkspace() { ... }
+    public void SaveWorkspace(Workspace workspace) { ... }
+    public IReadOnlyList<Threat> LoadThreats() { ... }
+    public void SaveThreats(IReadOnlyList<Threat> threats) { ... }
+    public IReadOnlyList<Vulnerability> LoadVulnerabilities() { ... }
+    public void SaveVulnerabilities(IReadOnlyList<Vulnerability> vulnerabilities) { ... }
+    public IReadOnlyList<SecurityIncident> LoadIncidents() { ... }
+    public void SaveIncidents(IReadOnlyList<SecurityIncident> incidents) { ... }
+}
+```
+
+#### D.3 Реализация импорта/экспорта (SOCpit.Import)
+- [ ] **PASS-1** Реализовать импорт из MATRIX V3
+- [ ] **PASS-1** Реализовать экспорт в SOCpit формат
+- [ ] **PASS-1** Реализовать миграцию данных
+- [ ] **PASS-1** Реализовать валидацию при импорте
+
+**MigrationService.cs:**
+```csharp
+public static class MigrationService
+{
+    public static Workspace MigrateFromMATRIX(MATRIX.Core.Workspace matrixWorkspace)
+    {
+        // Конвертация MATRIX сущностей в SOCpit сущности
+        // Сохранение всех ID и связей
+        // Добавление новых полей безопасности
+    }
+}
+```
+
+#### D.4 Реализация UI (SOCpit.App)
+- [ ] **PASS-1** Создать SecurityDashboard
+- [ ] **PASS-1** Создать ThreatView с визуализацией
+- [ ] **PASS-1** Создать VulnerabilityView с фильтрами
+- [ ] **PASS-1** Создать IncidentView с timeline
+- [ ] **PASS-1** Создать EvidenceView
+- [ ] **PASS-1** Реализовать навигацию между views
+
+**SecurityDashboard.xaml:**
+```xml
+<Window x:Class="SOCpit.App.SecurityDashboard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <!-- Security Score Card -->
+        <Border Grid.Row="0" Grid.Column="0">
+            <TextBlock Text="Security Score: 95%" FontSize="24" Foreground="Green"/>
+        </Border>
+        
+        <!-- Threat Summary -->
+        <Border Grid.Row="0" Grid.Column="1">
+            <TextBlock Text="Active Threats: 3" FontSize="18" Foreground="Red"/>
+        </Border>
+        
+        <!-- Vulnerability Summary -->
+        <Border Grid.Row="0" Grid.Column="2">
+            <TextBlock Text="Critical Vulns: 2" FontSize="18" Foreground="Orange"/>
+        </Border>
+        
+        <!-- Graph Visualization -->
+        <Canvas Grid.Row="1" Grid.ColumnSpan="3">
+            <!-- Threat graph visualization -->
+        </Canvas>
+    </Grid>
+</Window>
+```
+
+#### D.5 Реализация сервисов
+- [ ] **PASS-1** Реализовать AuditService
+- [ ] **PASS-1** Реализовать NotificationService
+- [ ] **PASS-1** Реализовать ReportService
+- [ ] **PASS-1** Реализовать BackupService
+
+---
+
+## 3.6 Фаза E: Тестирование и валидация
+
+### Цель:
+Полное тестирование всех компонентов SOCpit
+
+### Задачи:
+
+#### E.1 Создание тестов
+- [ ] **PASS-1** Создать SOCpit.Core.Tests
+- [ ] **PASS-1** Создать SOCpit.Application.Tests
+- [ ] **PASS-1** Создать SOCpit.Storage.Tests
+- [ ] **PASS-1** Создать SOCpit.Import.Tests
+- [ ] **PASS-1** Создать SOCpit.App.Tests (UI тесты)
+
+**Примеры тестов:**
+```csharp
+// ThreatDetectionTests.cs
+[Fact]
+public void DetectThreats_WithMissingControls_ReturnsThreats()
+{
+    // Arrange
+    var nodes = new List<Node> { /* ... */ };
+    var controls = new List<Control>(); // Нет контролов
+    
+    // Act
+    var threats = ThreatDetection.DetectThreats(nodes, new List<Edge>(), controls, new List<Evidence>());
+    
+    // Assert
+    Assert.NotEmpty(threats);
+    Assert.Contains(threats, t => t.Severity == ThreatSeverity.High);
+}
+
+// SecurityPolicyTests.cs
+[Fact]
+public void ComputeOverallSecurityScore_WithCriticalVulnerabilities_ReturnsLowScore()
+{
+    // Arrange
+    var vulnerabilities = new List<Vulnerability>
+    {
+        new Vulnerability { Severity = VulnerabilitySeverity.Critical }
+    };
+    
+    // Act
+    var score = SecurityPolicy.ComputeOverallSecurityScore(
+        new List<Node>(), new List<Threat>(), vulnerabilities, new List<Control>(), new List<Evidence>());
+    
+    // Assert
+    Assert.True(score < 50); // Низкий балл при критических уязвимостях
+}
+```
+
+#### E.2 Запуск тестов
+- [ ] **PASS-1** Запустить все C# тесты (dotnet test)
+- [ ] **PASS-1** Запустить все Python тесты
+- [ ] **PASS-1** Исправить все найденные ошибки
+- [ ] **PASS-1** Добиться 100% прохождения тестов
+
+**Команды:**
+```bash
+dotnet test SOCpit.sln -c Release
+python3 tools/test_socpit.py
+```
+
+#### E.3 Валидация данных
+- [ ] **PASS-1** Проверить валидацию всех схем JSON
+- [ ] **PASS-1** Проверить импорт/экспорт
+- [ ] **PASS-1** Проверить миграцию из MATRIX
+- [ ] **PASS-1** Проверить хранение и загрузку
+
+**Тестовые сценарии:**
+1. Импорт MATRIX workspace → миграция → экспорт SOCpit → импорт обратно
+2. Создание угрозы → сохранение → загрузка → проверка целостности
+3. Обнаружение уязвимостей → валидация → отображение
+4. Создание инцидента → связывание с угрозами → проверка статуса
+
+#### E.4 Тестирование UI
+- [ ] **PASS-1** Проверить запуск UI
+- [ ] **PASS-1** Проверить навигацию между views
+- [ ] **PASS-1** Проверить отображение данных
+- [ ] **PASS-1** Проверить редактирование сущностей
+- [ ] **PASS-F** Проверить на реальном Windows ПК (требует NEO)
+
+---
+
+## 3.7 Фаза F: Сборка и публикация
+
+### Цель:
+Сборка всех релизов SOCpit
+
+### Задачи:
+
+#### F.1 Настройка CI/CD
+- [ ] **PASS-1** Создать build-test.yml для SOCpit
+- [ ] **PASS-1** Создать release.yml для публикации
+- [ ] **PASS-1** Настроить GitHub Actions
+
+**build-test.yml:**
+```yaml
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    
+    - name: Restore dependencies
+      run: dotnet restore SOCpit.sln
+    
+    - name: Build
+      run: dotnet build SOCpit.sln -c Release --no-restore
+    
+    - name: Test
+      run: dotnet test SOCpit.sln -c Release --no-build
+    
+    - name: Publish
+      run: dotnet publish src/SOCpit.App/SOCpit.App.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o publish/
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: SOCpit-EXE
+        path: publish/
+```
+
+#### F.2 Сборка релизов
+- [ ] **PASS-1** Собрать SOCpit v2.0.0-alpha.1
+- [ ] **PASS-1** Собрать SOCpit v2.0.0-beta.1
+- [ ] **PASS-1** Собрать SOCpit v2.0.0-rc.1
+- [ ] **PASS-1** Собрать SOCpit v2.0.0 (финальный)
+
+**Версии:**
+- **Alpha:** Первая сборка с базовым функционалом
+- **Beta:** Сборка с большинством функций, может содержать баги
+- **RC:** Кандидат на релиз, прошел все тесты
+- **Final:** Финальная версия, готовая для пользователя
+
+#### F.3 Создание пакетов
+- [ ] **PASS-1** Создать SOCpit-v2.0.0-alpha.1.zip
+- [ ] **PASS-1** Создать SOCpit-v2.0.0-beta.1.zip
+- [ ] **PASS-1** Создать SOCpit-v2.0.0-rc.1.zip
+- [ ] **PASS-1** Создать SOCpit-v2.0.0-FINAL.zip
+
+**Структура ZIP:**
+```
+SOCpit-v2.0.0-FINAL.zip
+├── src/
+│   └── (все исходные файлы)
+├── publish/
+│   ├── SOCpit.exe
+│   └── (сопроводительные файлы)
+├── docs/
+│   ├── README.md
+│   ├── CHANGELOG.md
+│   ├── SECURITY.md
+│   └── LICENSE
+├── schemas/
+│   └── (все схемы JSON)
+├── scripts/
+│   └── (все скрипты)
+├── tools/
+│   └── (все инструменты)
+├── VERSION.json
+├── SHA256SUMS.txt
+└── SOCpit_2026_[FINAL.MD]
+```
+
+#### F.4 Создание метаданных
+- [ ] **PASS-1** Создать VERSION.json
+- [ ] **PASS-1** Создать SHA256SUMS.txt
+- [ ] **PASS-1** Создать RELEASE-NOTES.md
+
+**VERSION.json:**
+```json
+{
+  "product": "SOCpit",
+  "version": "2.0.0",
+  "build": "20261009.1",
+  "sdk": ".NET 8.0.100",
+  "rid": "win-x64",
+  "buildTime": "2026-10-09T12:00:00Z",
+  "commit": "abc123def456",
+  "validationStatus": {
+    "allTestsPassed": true,
+    "buildSuccess": true,
+    "securityChecks": "PASS-1",
+    "finalVerification": "PASS-F (требует проверки на ПК NEO)"
+  }
+}
+```
+
+---
+
+## 3.8 Фаза G: Загрузка в репозиторий
+
+### Цель:
+Загрузка всех артефактов в репозиторий SOCpit
+
+### Задачи:
+
+#### G.1 Создание релиза на GitHub
+- [ ] **PASS-1** Создать tag v2.0.0-alpha.1
+- [ ] **PASS-1** Создать Release v2.0.0-alpha.1
+- [ ] **PASS-1** Загрузить SOCpit-v2.0.0-alpha.1.zip
+- [ ] **PASS-1** Создать tag v2.0.0-beta.1
+- [ ] **PASS-1** Создать Release v2.0.0-beta.1
+- [ ] **PASS-1** Загрузить SOCpit-v2.0.0-beta.1.zip
+- [ ] **PASS-1** Создать tag v2.0.0-rc.1
+- [ ] **PASS-1** Создать Release v2.0.0-rc.1
+- [ ] **PASS-1** Загрузить SOCpit-v2.0.0-rc.1.zip
+- [ ] **PASS-1** Создать tag v2.0.0
+- [ ] **PASS-1** Создать Release v2.0.0
+- [ ] **PASS-1** Загрузить SOCpit-v2.0.0-FINAL.zip
+
+**Команды GitHub CLI:**
+```bash
+# Создание тега
+gh release create v2.0.0-alpha.1 --title "SOCpit v2.0.0-alpha.1" --notes "Первый альфа-релиз" --prerelease
+
+# Загрузка артефакта
+gh release upload v2.0.0-alpha.1 SOCpit-v2.0.0-alpha.1.zip
+```
+
+#### G.2 Обновление документации
+- [ ] **PASS-1** Обновить README.md
+- [ ] **PASS-1** Обновить CHANGELOG.md
+- [ ] **PASS-1** Создать docs/RELEASE-HISTORY.md
+- [ ] **PASS-1** Создать docs/INSTALLATION.md
+
+#### G.3 Проверка загрузки
+- [ ] **PASS-1** Проверить все release на GitHub
+- [ ] **PASS-1** Проверить целостность загруженных файлов
+- [ ] **PASS-1** Проверить SHA256 хеши
+- [ ] **PASS-1** Проверить доступность для скачивания
+
+---
+
+## 3.9 Фаза H: Финальный отчет
+
+### Цель:
+Создание финального документа SOCpit_2026_[FINAL.MD]
+
+### Задачи:
+
+#### H.1 Сбор информации
+- [ ] **PASS-1** Собрать все метрики проекта
+- [ ] **PASS-1** Собрать результаты всех тестов
+- [ ] **PASS-1** Собрать информацию о всех релизах
+- [ ] **PASS-1** Собрать информацию о всех PASS статусах
+
+#### H.2 Создание SOCpit_2026_[FINAL.MD]
+- [ ] **PASS-1** Создать структуру документа
+- [ ] **PASS-1** Добавить контекст
+- [ ] **PASS-1** Добавить описание выполненной работы
+- [ ] **PASS-1** Добавить результаты проверок
+- [ ] **PASS-1** Добавить инструкции для NEO
+- [ ] **PASS-1** Добавить карту источников
+- [ ] **PASS-1** Добавить отчет о проверках
+
+**Структура SOCpit_2026_[FINAL.MD]:**
+```
+SOCpit_2026_[FINAL.MD]
+├── CONTEXT
+│   ├── Информация о проекте
+│   ├── Информация о пользователе
+│   └── Инфраструктура
+├── EXECUTION SUMMARY
+│   ├── Выполненные фазы
+│   ├── Результаты
+│   └── Метрики
+├── TECHNICAL DETAILS
+│   ├── Архитектура
+│   ├── Компоненты
+│   └── Технологии
+├── TESTING
+│   ├── Результаты тестов
+│   ├── Покрытие
+│   └── Сценарии
+├── RELEASES
+│   ├── Alpha
+│   ├── Beta
+│   ├── RC
+│   └── Final
+├── PASS STATUS
+│   ├── PASS-1
+│   ├── PASS-2
+│   └── PASS-F
+├── NEO ACTIONS
+│   └── Действия для пользователя
+└── FILES
+    ├── ZIP архив
+    ├── Репозиторий
+    └── Документация
+```
+
+---
+
+# 📊 МАТРИЦА ОТВЕТСТВЕННОСТИ И СТАТУСОВ
+
+## 4.1 Статусы проверок
+
+| Компонент | Статус | Примечание |
+|-----------|--------|------------|
+| Анализ источников | PASS-1 | Все источники проанализированы |
+| Аудит MATRIX | PASS-1 | Полный аудит выполнен |
+| Создание baseline | PASS-1 | Baseline SOCpit создан |
+| Реализация Core | PASS-1 | Ядро реализовано |
+| Реализация Storage | PASS-1 | Хранилище реализовано |
+| Реализация Import | PASS-1 | Импорт/экспорт реализован |
+| Реализация UI | PASS-1 | UI реализован |
+| Тестирование C# | PASS-1 | Все тесты проходят |
+| Тестирование Python | PASS-1 | Все тесты проходят |
+| Сборка Alpha | PASS-1 | Alpha собран |
+| Сборка Beta | PASS-1 | Beta собран |
+| Сборка RC | PASS-1 | RC собран |
+| Сборка Final | PASS-1 | Final собран |
+| Загрузка на GitHub | PASS-1 | Все релизы загружены |
+| Финальная проверка на ПК | PASS-F | Требует выполнения NEO |
+
+## 4.2 PASS-F Действия для NEO
+
+| # | Действие | Инструкция | Ожидаемый результат | Статус |
+|---|----------|------------|---------------------|--------|
+| 1 | Скачать ZIP архив | Скачать SOCpit-v2.0.0-FINAL.zip с GitHub Release | Файл загружен на ПК | PASS-F |
+| 2 | Распаковать архив | Распаковать в C:\SOCpit | Папка создана, файлы доступны | PASS-F |
+| 3 | Запустить SOCpit.exe | Запустить как обычный пользователь | Приложение запустилось без ошибок | PASS-F |
+| 4 | Проверить данные | Проверить %LOCALAPPDATA%\SOCpit | Данные создаются и сохраняются | PASS-F |
+| 5 | Проверить UI | Открыть все views, проверить навигацию | UI работает корректно | PASS-F |
+| 6 | Проверить импорт | Импортировать данные из MATRIX | Данные импортированы успешно | PASS-F |
+| 7 | Проверить экспорт | Экспортировать данные | Данные экспортированы успешно | PASS-F |
+| 8 | Проверить тесты | Запустить dotnet test | Все тесты проходят | PASS-F |
+| 9 | Финальная проверка | Проверить все функции | Все функции работают | PASS-F |
+
+## 4.3 Необходимые инструменты на ПК NEO
+
+| Инструмент | Версия | Назначение |
+|------------|--------|------------|
+| Windows | 10/11 x64 | Операционная система |
+| .NET 8 SDK | 8.0.100+ | Разработка и запуск |
+| Git | 2.40+ | Контроль версий |
+| VS Code | Последняя | Редактор кода |
+| PowerShell | 7+ | Скрипты |
+
+---
+
+# 🎯 ИТОГОВЫЕ ТРЕБОВАНИЯ
+
+## 5.1 Для ИИ Агента Оркестратора
+
+1. ✅ **Прочитать этот документ целиком**
+2. ✅ **Выполнить все фазы (A-H)**
+3. ✅ **Создать SOCpit.exe**
+4. ✅ **Создать все релизы**
+5. ✅ **Упаковать в ZIP**
+6. ✅ **Создать SOCpit_2026_[FINAL.MD]**
+7. ✅ **Использовать PASS-1/2/3 для статусов**
+8. ✅ **Не назначать PASS без проверки на ПК NEO**
+
+## 5.2 Для пользователя NEO
+
+1. 📥 **Скачать SOCpit-v2.0.0-FINAL.zip**
+2. 📁 **Распаковать на ПК**
+3. ▶️ **Запустить SOCpit.exe**
+4. ✅ **Проверить все функции**
+5. ✅ **Проверить безопасность**
+6. ✅ **Поставить финальный PASS** (только после проверки на ПК)
+
+## 5.3 Конечные артефакты
+
+| Артефакт | Расположение | Статус |
+|----------|-------------|--------|
+| SOCpit_2026_[FINAL.MD] | В ZIP архиве | Готов |
+| SOCpit.exe | publish/SOCpit.exe | Готов |
+| SOCpit-v2.0.0-FINAL.zip | GitHub Release | Готов |
+| Исходный код | src/ | Готов |
+| Документация | docs/ | Готов |
+| Тесты | tests/ | Готов |
+| Схемы | schemas/ | Готов |
+| Скрипты | scripts/ | Готов |
+
+---
+
+# 📝 ОТВЕТЫ ПОЛЬЗОВАТЕЛЯ NEO (ПОЛУЧЕНЫ 09.10.2026)
+
+## ⚡ ВАЖНОЕ ДОПОЛНЕНИЕ ОТ NEO
+> **"ШАГИ РАЗРАБОТКИ НЕ ДОЛЖНЫ БЛОКИРОВАТЬСЯ ИЗ ЗА ОТСУТСТВИЯ ПРОВЕРОК/ТЕСТОВ С МОИМ НЕПОСРЕДСТВЕННЫМ УЧАСТИЕМ, ЕСЛИ ПРОВЕРКА ТРЕБУЕТ МОЕГО УЧАСТИЯ (К ПРИМЕРУ ЛОКАЛЬНАЯ ПРОВЕРКА НА МОЕМ ПК) - ОТКЛАДЫВАЙ НА КОНЕЦ И ЗАФИКСИРУЙ В ОТЧЕТЕ, ЧТО ЕЕ НАДО БУДЕТ ВЫПОЛНИТЬ И ПРОДОЛЖАЙ РАЗРАБОТКУ, СЕГОДНЯ НУЖНО ВСЁ ЗАКОНЧИТЬ."**
+
+**Интерпретация:**
+- ❌ НЕ останавливать разработку из-за отсутствия participation NEO
+- ✅ Продолжать разработку даже если проверка требует participation NEO
+- ✅ Откладывать проверки на конец, если они требуют participation NEO
+- ✅ Фиксировать в отчете все отложенные проверки
+- ✅ **ВСЁ ДОЛЖНО БЫТЬ ЗАКОНЧЕНО СЕГОДНЯ** (09.10.2026)
+
+---
+
+## 🎯 ПОДТВЕРЖДЁННЫЕ ПАРАМЕТРЫ ПРОЕКТА
+
+| № | Параметр | Ответ NEO | Статус |
+|---|----------|-----------|--------|
+| 1 | **Репозиторий** | [aifirsts/SOCpit2026](https://github.com/aifirsts/SOCpit2026) | ✅ Создан пользователем |
+| 2 | **.NET SDK** | **.NET 10** | ✅ Подтверждено |
+| 3 | **Формат сборки** | Single-file self-contained | ✅ Подтверждено |
+| 4 | **Интеграция** | Независимый проект + импорт из MATRIX | ✅ Подтверждено |
+| 5 | **Безопасность** | Conservative (ADR-V2-SEC-001) | ✅ Подтверждено |
+| 6 | **Язык UI** | Русский (основной) + Английский | ✅ Подтверждено |
+| 7 | **Путь данных** | `C:\SOCpit2026` | ✅ Подтверждено |
+| 8 | **Финальный статус** | COMPLETED_WITH_PASS_F | ✅ Подтверждено |
+| 9 | **ZIP формат** | Один ZIP + оригинальная папка | ✅ Подтверждено |
+| 10 | **Версионирование** | Дата (ГГГГ.ММ.ДД) | ✅ Подтверждено |
+
+---
+
+## 📋 ВОПРОСЫ (ОТВЕЧЕНЫ ПОЛЬЗОВАТЕЛЕМ)
+
+### Вопрос 1: Подтверждение создаваемого репозитория
+**Вопрос:** Создать новый репозиторий `aifirsts/SOCpit` на GitHub для проекта SOCpit?
+**Опции:**
+- [ ] Да, создать новый ПУБЛИЧНЫЙ репозиторий
+- [ ] Нет, использовать существующий репозиторий (указать какой)
+- [ ] Создать приватный репозиторий
+
+**✅ ОТВЕТ NEO:** [aifirsts/SOCpit2026] **УЖЕ СОЗДАН ПУБЛИЧНЫЙ**
+
+### Вопрос 2: Версия .NET SDK
+**Вопрос:** Какую версию .NET SDK использовать для SOCpit?
+**Опции:**
+- [ ] .NET 8 LTS (рекомендуется для стабильности)
+- [ ] .NET 9 (если доступно)
+- [ ] Другая версия (указать)
+
+**✅ ОТВЕТ NEO:** **.NET 10**
+
+### Вопрос 3: Формат сборки
+**Вопрос:** Какой формат сборки использовать для SOCpit.exe?
+**Опции:**
+- [ ] Single-file self-contained (как в MATRIX V3)
+- [ ] Framework-dependent (требует .NET 8 на ПК)
+- [ ] Multi-file self-contained
+
+**✅ ОТВЕТ NEO:** **Single-file self-contained (РЕКОМЕНДОВАННЫЙ)**
+
+### Вопрос 4: Интеграция с MATRIX
+**Вопрос:** Интегрировать SOCpit с MATRIX V3 или сделать независимым проектом?
+**Опции:**
+- [ ] Независимый проект с возможностью импорта из MATRIX
+- [ ] Прямая интеграция (SOCpit как модуль MATRIX)
+- [ ] Заменить MATRIX на SOCpit
+
+**✅ ОТВЕТ NEO:** **Независимый проект с импортом из MATRIX**
+
+### Вопрос 5: Уровень безопасности по умолчанию
+**Вопрос:** Какой уровень безопасности использовать по умолчанию?
+**Опции:**
+- [ ] Conservative (как в ADR-V2-SEC-001)
+- [ ] Strict (максимальная безопасность)
+- [ ] Permissive (минимальная безопасность)
+
+**✅ ОТВЕТ NEO:** **Conservative (как в ADR-V2-SEC-001)**
+
+### Вопрос 6: Язык интерфейса
+**Вопрос:** Использовать русский или английский язык для UI?
+**Опции:**
+- [ ] Русский (как в MATRIX)
+- [ ] Английский
+- [ ] Двуязычный (с переключением)
+
+**✅ ОТВЕТ NEO:** **Русский (основной) + Английский**
+
+### Вопрос 7: Формат хранения данных
+**Вопрос:** Где хранить данные SOCpit?
+**Опции:**
+- [ ] `%LOCALAPPDATA%\SOCpit` (как MATRIX)
+- [ ] `C:\SOCpit`
+- [ ] Выбираемый пользователем путь
+
+**✅ ОТВЕТ NEO:** **`C:\SOCpit2026`**
+
+### Вопрос 8: Подтверждение финального статуса
+**Вопрос:** После выполнения всех задач, какой статус назначить проекту?
+**Опции:**
+- [ ] COMPLETED (все проверки пройдены в песочнице)
+- [ ] COMPLETED_WITH_PASS_F (все сделано, но требуется проверка на ПК NEO)
+- [ ] IN_PROGRESS (есть незавершенные задачи)
+
+**✅ ОТВЕТ NEO:** **COMPLETED_WITH_PASS_F**
+
+### Вопрос 9: Формат ZIP архива
+**Вопрос:** Какой формат ZIP архива использовать?
+**Опции:**
+- [ ] Один ZIP с всеми файлами (рекомендуется)
+- [ ] Отдельные ZIP для исходников и бинарников
+- [ ] Только бинарники (EXE + зависимости)
+
+**✅ ОТВЕТ NEO:** **Один ZIP с всеми файлами + оригинальная папка (если возможно)**
+
+### Вопрос 10: Схема версионирования
+**Вопрос:** Какую схему версионирования использовать?
+**Опции:**
+- [ ] Semantic Versioning 2.0
+- [ ] Дата версий
+- [ ] Номер сборки
+
+**✅ ОТВЕТ NEO:** **Дата версий (ГГГГ.ММ.ДД)**
+
+---
+
+# 📌 ПРИМЕЧАНИЯ И УКАЗАНИЯ
+
+## Примечание 1: О статусах PASS
+- **PASS-1**: Моя проверка пройдена, осталась финальная проверка на ПК NEO
+- **PASS-2**: Моя проверка пройдена частично
+- **PASS-3**: Проверка не пройдена
+- **Без PASS**: Не работает корректно, требуются доработки
+
+## Примечание 2: О тестировании на Windows
+- В песочнице Linux Windows сборка недоступна
+- Использовать GitHub Actions CI для сборки на windows-latest
+- Финальная проверка на ПК NEO обязательна
+
+## Примечание 3: О безопасности
+- Не включать реальные данные NEO в публичный репозиторий
+- Не публиковать secrets, credentials, private IP
+- Все тестовые данные должны быть synthetic/fictional
+
+## Примечание 4: О совместимости
+- SOCpit должен быть совместим с MATRIX V3
+- Импорт из MATRIX должен работать корректно
+- Миграция данных должна быть безопасной
+
+## Примечание 5: О документации
+- Вся документация должна быть на русском языке
+- Все комментарии в коде должны быть на русском или английском
+- README.md должен содержать инструкции по установке и использованию
+
+---
+
+# 🏁 ЗАКЛЮЧЕНИЕ
+
+Этот документ **SOCPIT_[2026.MD]** является единым источником истины для ИИ Агента Оркестратора. Он содержит:
+
+1. ✅ **Полный контекст** о пользователе, инфраструктуре и связанных проектах
+2. ✅ **Детальное задание** для создания SOCpit 2
+3. ✅ **Пошаговый план** работы с 8 фазами
+4. ✅ **Требования и ограничения**
+5. ✅ **Критерии приемки**
+6. ✅ **Матрицу статусов** PASS-1/2/3/F
+
+**Следующие шаги:**
+1. ИИ Агент Оркестратор изучает этот документ
+2. ИИ Агент выполняет все фазы (A-H)
+3. ИИ Агент создает SOCpit_2026_[FINAL.MD]
+4. ИИ Агент создает SOCpit-v2.0.0-FINAL.zip
+5. Пользователь NEO скачивает и проверяет на своем ПК
+6. Пользователь ставит финальный PASS после проверки
+
+**Конечная цель:** Работающий SOCpit.exe на ПК NEO с полным функционалом безопасности и аудита.
+
+---
+
+**Документ создан:** 09 октября 2026  
+**Версия:** 1.0  
+**Статус:** Готов для ИИ Агента Оркестратора  
+**Следующая версия:** SOCpit_2026_[FINAL.MD] (создается ИИ Агентом)
+
+---
+
+*Этот документ является конфиденциальным и предназначен только для использования ИИ Агентом Оркестратором в рамках текущей задачи.*
