@@ -111,60 +111,78 @@ public class DomainTests
     }
 
     [Fact]
-    public void SecurityPolicy_ComputeEffectiveSecurity_UsesConservativePolicy()
+    public void SecurityPolicy_ComputeNodeSecurity_UsesConservativePolicy()
     {
         // Arrange
-        var node = new NodeId(Guid.NewGuid());
-        var meta = new NodeMeta(
-            Title: "Critical Node",
-            Summary: null,
-            ContentRef: null,
-            Security: SecurityLevel.Restricted,
-            Origin: DataOrigin.Internal,
-            Trust: TrustLevel.Verified,
-            CreatedUtc: DateTimeOffset.UtcNow,
-            ModifiedUtc: DateTimeOffset.UtcNow,
-            Version: 1);
+        var now = DateTimeOffset.UtcNow;
+        var control = Control.Create(
+            id: "ctrl-1",
+            targetId: "node-1",
+            criterion: "TLS 1.3 enforced",
+            scope: "network",
+            method: "automated-scan",
+            required: true,
+            criticality: Criticality.High,
+            ttlSeconds: 3600,
+            applicability: ControlApplicability.Applicable,
+            rationale: "Mandatory encryption");
 
-        var evidence = new List<ControlEvidence>
-        {
-            new(new EvidenceId(Guid.NewGuid()), "High sensitivity log", "ref-1", "HASH1", DateTimeOffset.UtcNow, SecurityLevel.Secret)
-        };
-
-        var links = new List<Link>
-        {
-            new(new LinkId(Guid.NewGuid()), node, new NodeId(Guid.NewGuid()), LinkKind.DependsOn, 1.0, "dep", DateTimeOffset.UtcNow, SecurityLevel.Confidential)
-        };
+        var passEvidence = ControlEvidence.Create(
+            id: "ev-1",
+            controlId: "ctrl-1",
+            scope: "network",
+            source: "scanner",
+            method: "automated-scan",
+            operatorName: "sec-bot",
+            observedAt: now.AddMinutes(-10),
+            validUntil: now.AddMinutes(50),
+            result: EvidenceResult.Pass,
+            provenance: EvidenceProvenance.AutomatedScan,
+            revoked: false,
+            supersedes: Array.Empty<string>());
 
         // Act
-        var effective = SecurityPolicy.ComputeEffectiveSecurity(node, meta, evidence, links);
+        var statusWithValidEvidence = SecurityPolicy.ComputeNodeSecurity(
+            "node-1",
+            new List<Control> { control },
+            new List<ControlEvidence> { passEvidence },
+            now);
+
+        var statusWithoutEvidence = SecurityPolicy.ComputeNodeSecurity(
+            "node-1",
+            new List<Control> { control },
+            Array.Empty<ControlEvidence>(),
+            now);
 
         // Assert
-        Assert.Equal(SecurityLevel.Secret, effective);
+        Assert.Equal(Security.Pass, statusWithValidEvidence);
+        Assert.Equal(Security.Unknown, statusWithoutEvidence);
     }
 
     [Fact]
-    public void GraphValidator_Validate_DetectsInvalidTaskProgress()
+    public void SecurityPolicy_ValidateSupersedes_DetectsSelfSupersedes()
     {
         // Arrange
-        var nodeId = new NodeId(Guid.NewGuid());
-        var nodes = new Dictionary<NodeId, NodeMeta>
-        {
-            [nodeId] = new NodeMeta("Node 1", null, null, SecurityLevel.Internal, DataOrigin.Internal, TrustLevel.Verified, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, 1)
-        };
-        var tasks = new Dictionary<NodeId, ProjectTask>
-        {
-            [nodeId] = new ProjectTask(nodeId, ProjectTaskStatus.InProgress, 150, null, null, null)
-        };
+        var now = DateTimeOffset.UtcNow;
+        var selfSupersedingEvidence = ControlEvidence.Create(
+            id: "ev-self",
+            controlId: "ctrl-1",
+            scope: "network",
+            source: "scanner",
+            method: "scan",
+            operatorName: "sec-bot",
+            observedAt: now,
+            validUntil: now.AddHours(1),
+            result: EvidenceResult.Pass,
+            provenance: EvidenceProvenance.AutomatedScan,
+            revoked: false,
+            supersedes: new List<string> { "ev-self" });
 
         // Act
-        var issues = GraphValidator.Validate(
-            nodes,
-            Array.Empty<Link>(),
-            tasks,
-            new Dictionary<NodeId, IReadOnlyList<ControlEvidence>>());
+        var isValid = SecurityPolicy.ValidateSupersedes(new List<ControlEvidence> { selfSupersedingEvidence }, out var error);
 
         // Assert
-        Assert.Contains(issues, i => i.Code == "TASK_PROGRESS_RANGE" && i.Severity == ValidationSeverity.Error);
+        Assert.False(isValid);
+        Assert.NotNull(error);
     }
 }

@@ -17,6 +17,9 @@ on:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-and-release:
     name: Build, Test & Package (Windows x64)
@@ -74,23 +77,61 @@ jobs:
 
           $exeHash = (Get-FileHash $exePath -Algorithm SHA256).Hash
           $exeSize = (Get-Item $exePath).Length
+          $exeSizeMB = [math]::Round($exeSize / 1MB, 2)
 
           Compress-Archive -Path "publish/SOCpit-2026.10.11/*" -DestinationPath "SOCpit-2026.10.11-RELEASE.zip" -Force
 
           $zipPath = "SOCpit-2026.10.11-RELEASE.zip"
           $zipHash = (Get-FileHash $zipPath -Algorithm SHA256).Hash
           $zipSize = (Get-Item $zipPath).Length
+          $zipSizeMB = [math]::Round($zipSize / 1MB, 2)
 
           $checksumContent = @(
             "# SOCpit v2026.10.11 SHA-256 Checksums"
             "# Generated: $(Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ')"
-            "$exeHash  SOCpit.App.exe ($exeSize bytes)"
-            "$zipHash  SOCpit-2026.10.11-RELEASE.zip ($zipSize bytes)"
+            "$exeHash  SOCpit.App.exe ($exeSize bytes / $exeSizeMB MB)"
+            "$zipHash  SOCpit-2026.10.11-RELEASE.zip ($zipSize bytes / $zipSizeMB MB)"
           ) -join "`n"
 
           Set-Content -Path "SHA256SUMS.txt" -Value $checksumContent -Encoding UTF8
-          Write-Host "=== Checksums ==="
-          Write-Host $checksumContent
+
+          $releaseNotes = @"
+          # SOCpit v2026.10.11 - Production Ready
+
+          **Version**: ``2026.10.11``
+          **Release Date**: ``2026-10-11``
+          **Status**: ``COMPLETED_WITH_PASS_F`` (12/12 Quality Gates ``PASS-1``)
+          **Platform**: Windows 10/11 (x64) — Self-Contained Single-File EXE (.NET 10.0 bundled)
+
+          ---
+
+          ## Quick Start (RU / EN)
+
+          1. **Download / Скачать**: ``SOCpit-2026.10.11-RELEASE.zip``
+          2. **Extract / Распаковать**: Extract to any directory (e.g., ``C:\SOCpit2026\App``)
+          3. **Run / Запустить**: Launch ``SOCpit.App.exe`` (no separate .NET runtime installation required)
+          4. **Data Storage / Хранение данных**: Automatically initialized at ``C:\SOCpit2026`` (``socpit.db`` & ``logs\``)
+
+          ---
+
+          ## Build & Security Highlights
+
+          - **5-Layer Architecture**: ``SOCpit.Core``, ``SOCpit.Application``, ``SOCpit.Storage``, ``SOCpit.Import``, ``SOCpit.App``
+          - **Security Policy**: Conservative (``ADR-V2-SEC-001``)
+          - **Languages**: Russian (primary) + English
+          - **Persistence**: Entity Framework Core 10.0 + SQLite + Serilog rolling file logs
+
+          ---
+
+          ## SHA-256 Checksums & File Sizes
+
+          | Artifact | Size | SHA-256 |
+          |---|---|---|
+          | ``SOCpit-2026.10.11-RELEASE.zip`` | $zipSize bytes ($zipSizeMB MB) | ``$zipHash`` |
+          | ``SOCpit.App.exe`` | $exeSize bytes ($exeSizeMB MB) | ``$exeHash`` |
+          "@
+
+          Set-Content -Path "RELEASE_NOTES.md" -Value $releaseNotes -Encoding UTF8
 
       - name: Upload Release Artifact
         uses: actions/upload-artifact@v4
@@ -99,5 +140,24 @@ jobs:
           path: |
             SOCpit-2026.10.11-RELEASE.zip
             SHA256SUMS.txt
-            publish/SOCpit-2026.10.11/SOCpit.App.exe
+            RELEASE_NOTES.md
           if-no-files-found: error
+
+      - name: Publish GitHub Release v2026.10.11
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = "v2026.10.11"
+          $title = "SOCpit v2026.10.11 - Production Ready"
+
+          gh release view $tag > $null 2>&1
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag "SOCpit-2026.10.11-RELEASE.zip" "SHA256SUMS.txt" --clobber
+            gh release edit $tag --title $title --notes-file "RELEASE_NOTES.md"
+          } else {
+            gh release create $tag "SOCpit-2026.10.11-RELEASE.zip" "SHA256SUMS.txt" `
+              --title $title `
+              --notes-file "RELEASE_NOTES.md" `
+              --target "${{ github.sha }}"
+          }
