@@ -1,0 +1,89 @@
+<UserControl x:Class="SOCpit.App.Views.HostsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="1000"
+             Background="{StaticResource PrimaryBackgroundBrush}" Foreground="{StaticResource PrimaryTextBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,20">
+            <TextBlock Text="Hosts" FontSize="24" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+            <Viewbox Width="24" Height="24" Margin="10,0,0,0">
+                <Path Data="M20 2H4c-1.1 0-2 .9-2 2v18l2-2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 4H4V4h16v2zM4 18h16v2H4z" Fill="{StaticResource InfoBrush}" />
+            </Viewbox>
+        </StackPanel>
+
+        <Border Grid.Row="1" Margin="0,0,0,20" Padding="15"
+                Background="{StaticResource CardBackgroundBrush}" CornerRadius="8"
+                BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0" ItemsSource="{Binding TypeFilters}" SelectedItem="{Binding SelectedTypeFilter, Mode=TwoWay}" Margin="0,0,10,0" Width="120" />
+                <ComboBox Grid.Column="1" ItemsSource="{Binding StatusFilters}" SelectedItem="{Binding SelectedStatusFilter, Mode=TwoWay}" Margin="0,0,10,0" Width="120" />
+                <TextBox Grid.Column="2" Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="0,0,10,0" />
+                <Button Grid.Column="3" Content="Filter" Command="{Binding FilterCommand}" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Right" />
+                <Button Grid.Column="4" Content="Refresh" Command="{Binding RefreshCommand}" Style="{StaticResource SecondaryButtonStyle}" Margin="10,0,0,0" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Padding="10" Background="{StaticResource CardBackgroundBrush}" CornerRadius="8" BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Hosts}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,10" Padding="15" Background="{StaticResource ItemBackgroundBrush}" CornerRadius="6" BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource PrimaryTextBrush}" />
+                                            <TextBlock Text="{Binding Hostname}" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}" />
+                                            <TextBlock Text="{Binding IpAddress, StringFormat={}IP: {0}}" FontSize="12" Foreground="{StaticResource AccentBrush}" />
+                                            <TextBlock Text="{Binding MacAddress, StringFormat={}MAC: {0}}" FontSize="12" Foreground="{StaticResource SecondaryTextBrush}" />
+                                        </StackPanel>
+                                        <Border Grid.Column="1" Margin="10,0,0,0" Padding="5,2" Background="{StaticResource StatusBackgroundBrush}" CornerRadius="4">
+                                            <TextBlock Text="{Binding Type}" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryTextBrush}" />
+                                        </Border>
+                                        <Border Grid.Column="2" Margin="10,0,0,0" Padding="5,2" Background="{StaticResource StatusBackgroundBrush}" CornerRadius="4">
+                                            <TextBlock Text="{Binding Status}" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryTextBrush}" />
+                                        </Border>
+                                        <Border Grid.Column="3" Margin="10,0,0,0" Padding="5,2" Background="{StaticResource StatusBackgroundBrush}" CornerRadius="4">
+                                            <TextBlock Text="{Binding OperatingSystem}" FontSize="12" FontWeight="Bold" Foreground="{StaticResource PrimaryTextBrush}" />
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                <Button Content="Add" Command="{Binding AddCommand}" Style="{StaticResource AccentButtonStyle}" Margin="0,0,10,0" />
+                <Button Content="Edit" Command="{Binding EditCommand}" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0" />
+                <Button Content="Delete" Command="{Binding DeleteCommand}" Style="{StaticResource DangerButtonStyle}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

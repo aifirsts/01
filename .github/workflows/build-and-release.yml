@@ -1,0 +1,103 @@
+name: Build and Release SOCpit
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - 'arena/**'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build, Test & Package (Windows x64)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Display .NET info
+        run: dotnet --info
+
+      - name: Restore dependencies
+        working-directory: SOCpit2026
+        run: dotnet restore SOCpit.sln
+
+      - name: Build solution (Release)
+        working-directory: SOCpit2026
+        run: dotnet build SOCpit.sln --configuration Release --no-restore
+
+      - name: Run unit tests
+        working-directory: SOCpit2026
+        run: dotnet test SOCpit.sln --configuration Release --no-build --verbosity normal
+
+      - name: Publish Self-Contained Single-File EXE
+        working-directory: SOCpit2026
+        run: |
+          dotnet publish src/SOCpit.App/SOCpit.App.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true `
+            -p:DebugType=none `
+            -p:DebugSymbols=false `
+            --output ../publish/SOCpit-2026.10.11
+
+      - name: Package Release Archive & Compute Checksums
+        shell: pwsh
+        run: |
+          Copy-Item "SOCpit2026/README.md" -Destination "publish/SOCpit-2026.10.11/README.md" -Force
+          Copy-Item "SOCpit2026/INSTALL.md" -Destination "publish/SOCpit-2026.10.11/INSTALL.md" -Force
+
+          $exePath = "publish/SOCpit-2026.10.11/SOCpit.App.exe"
+          if (-not (Test-Path $exePath)) {
+            Write-Error "SOCpit.App.exe was not generated!"
+            exit 1
+          }
+
+          $exeHash = (Get-FileHash $exePath -Algorithm SHA256).Hash
+          $exeSize = (Get-Item $exePath).Length
+
+          Compress-Archive -Path "publish/SOCpit-2026.10.11/*" -DestinationPath "SOCpit-2026.10.11-RELEASE.zip" -Force
+
+          $zipPath = "SOCpit-2026.10.11-RELEASE.zip"
+          $zipHash = (Get-FileHash $zipPath -Algorithm SHA256).Hash
+          $zipSize = (Get-Item $zipPath).Length
+
+          $checksumContent = @(
+            "# SOCpit v2026.10.11 SHA-256 Checksums"
+            "# Generated: $(Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ')"
+            "$exeHash  SOCpit.App.exe ($exeSize bytes)"
+            "$zipHash  SOCpit-2026.10.11-RELEASE.zip ($zipSize bytes)"
+          ) -join "`n"
+
+          Set-Content -Path "SHA256SUMS.txt" -Value $checksumContent -Encoding UTF8
+          Write-Host "=== Checksums ==="
+          Write-Host $checksumContent
+
+      - name: Upload Release Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SOCpit-2026.10.11-RELEASE
+          path: |
+            SOCpit-2026.10.11-RELEASE.zip
+            SHA256SUMS.txt
+            publish/SOCpit-2026.10.11/SOCpit.App.exe
+          if-no-files-found: error
