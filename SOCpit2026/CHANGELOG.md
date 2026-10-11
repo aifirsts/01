@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Date-based Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026.10.11] - 2026-10-11
+
+### Production Release & Automated CI/CD Validation
+- **GitHub Actions CI/CD**: Added `.github/workflows/build-and-release.yml` for automated build, test, and self-contained single-file EXE packaging on `windows-latest` (.NET 10.0).
+- **Core Domain & Security Policy**: Implemented conservative `SecurityPolicy` (`ADR-V2-SEC-001`) and `GraphValidator` in `SOCpit.Core`.
+- **Storage & Persistence**: Added EF Core 10.0 JSON value converters for collection/dictionary properties and automatic database initialization/seeding at `C:\SOCpit2026\socpit.db`.
+- **WPF UI & MVVM**: Added View code-behind files, fixed XAML bindings/styles, generated valid Windows icon (`socpit.ico`), and updated application manifest.
+- **Documentation & Audit**: Added `INSTALL.md` (RU/EN), updated `README.md` with release links, and published `audit/FINAL-VALIDATION-2026-10-11.md` (`12/12 PASS-1`, `COMPLETED_WITH_PASS_F`).
+
 ## [2026.10.09] - 2026-10-09
 
 ### Initial Release
