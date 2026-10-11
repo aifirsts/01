@@ -36,7 +36,7 @@ namespace SOCpit.Storage
         public DbSet<Subnet> Subnets => Set<Subnet>();
         public DbSet<Vlan> Vlans => Set<Vlan>();
         public DbSet<Service> Services => Set<Service>();
-        public DbSet<Application> Applications => Set<Application>();
+        public DbSet<SOCpit.Core.Models.Application> Applications => Set<SOCpit.Core.Models.Application>();
 
         // User entities
         public DbSet<User> Users => Set<User>();
@@ -276,7 +276,7 @@ namespace SOCpit.Storage
 
         private static void ConfigureApplication(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Application>(entity =>
+            modelBuilder.Entity<SOCpit.Core.Models.Application>(entity =>
             {
                 entity.HasKey(a => a.Id);
                 entity.Property(a => a.Id).ValueGeneratedNever();
