@@ -184,7 +184,7 @@ namespace SOCpit.App.ViewModels
 
         private void Add()
         {
-            SelectedEvidence = Evidence.Create(
+            SelectedEvidence = SOCpit.Core.Evidence.Create(
                 id: Guid.NewGuid().ToString(),
                 name: "New Evidence",
                 type: EvidenceType.Log,
