@@ -1,0 +1,68 @@
+<Window x:Class="SOCpit.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SOCpit.App"
+        xmlns:views="clr-namespace:SOCpit.App.Views"
+        mc:Ignorable="d"
+        Title="SOCpit - Security Operations Center" Height="768" Width="1280"
+        WindowStartupLocation="CenterScreen" WindowState="Maximized"
+        Background="{StaticResource PrimaryBackgroundBrush}" Foreground="{StaticResource PrimaryTextBrush}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Navigation Sidebar -->
+        <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}" BorderThickness="0,0,1,0" BorderBrush="{StaticResource BorderBrush}">
+            <StackPanel VerticalAlignment="Top" Margin="0,20,0,0">
+                <!-- Logo -->
+                <TextBlock Text="SOCpit" FontSize="24" FontWeight="Bold" 
+                           HorizontalAlignment="Center" Margin="0,0,0,20"
+                           Foreground="{StaticResource AccentBrush}" />
+                <TextBlock Text="Security Operations Center" FontSize="12" 
+                           HorizontalAlignment="Center" Margin="0,0,0,30"
+                           Foreground="{StaticResource SecondaryTextBrush}" />
+
+                <!-- Navigation Items -->
+                <Button Content="Dashboard" Tag="Dashboard"
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Command="{Binding NavigateCommand}" CommandParameter="Dashboard" />
+                <Button Content="Threats" Tag="Threats"
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Command="{Binding NavigateCommand}" CommandParameter="Threats" />
+                <Button Content="Vulnerabilities" Tag="Vulnerabilities"
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Command="{Binding NavigateCommand}" CommandParameter="Vulnerabilities" />
+                <Button Content="Incidents" Tag="Incidents"
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Command="{Binding NavigateCommand}" CommandParameter="Incidents" />
+                <Button Content="Evidence" Tag="Evidence"
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Command="{Binding NavigateCommand}" CommandParameter="Evidence" />
+                <Button Content="Hosts" Tag="Hosts"
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Command="{Binding NavigateCommand}" CommandParameter="Hosts" />
+                <Button Content="Networks" Tag="Networks"
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Command="{Binding NavigateCommand}" CommandParameter="Networks" />
+                <Button Content="Users" Tag="Users"
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Command="{Binding NavigateCommand}" CommandParameter="Users" />
+                <Button Content="Reports" Tag="Reports"
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Command="{Binding NavigateCommand}" CommandParameter="Reports" />
+                <Button Content="Settings" Tag="Settings"
+                        Style="{StaticResource NavigationButtonStyle}"
+                        Command="{Binding NavigateCommand}" CommandParameter="Settings" />
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1" Margin="20">
+            <ContentControl Content="{Binding CurrentView}" />
+        </Grid>
+    </Grid>
+</Window>
