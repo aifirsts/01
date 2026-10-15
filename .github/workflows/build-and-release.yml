@@ -208,6 +208,8 @@ jobs:
           "| Threshold | $env:COVERAGE_THRESHOLD% |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
 
           "Line coverage: $covered / $total = $coverage% (threshold $env:COVERAGE_THRESHOLD%)"
+          Write-Host "::notice title=SOCpit coverage::lines $covered / $total = $coverage% (threshold $env:COVERAGE_THRESHOLD%)"
+          Set-Content -Path (Join-Path $env:GITHUB_WORKSPACE 'COVERAGE.txt') -Value "Line coverage: $covered / $total = $coverage%" -Encoding UTF8
 
           if ($coverage -lt [double]$env:COVERAGE_THRESHOLD) {
             Write-Error "Code coverage $coverage% is below the $env:COVERAGE_THRESHOLD% quality gate"
@@ -264,6 +266,7 @@ jobs:
           Set-Content -Path "SHA256SUMS.txt" -Value $checksumContent -Encoding UTF8
 
           $testSummary = if (Test-Path "TEST_SUMMARY.txt") { Get-Content "TEST_SUMMARY.txt" -Raw } else { "see workflow log" }
+          $coverageSummary = if (Test-Path "COVERAGE.txt") { (Get-Content "COVERAGE.txt" -Raw).Trim() } else { "see workflow log" }
 
           $releaseNotes = @"
           # SOCpit v$version - Production Ready
@@ -282,6 +285,10 @@ jobs:
           - **MATRIX V3 import/export round-trip tests** (export -> import -> verify) covering hosts, networks, threats, vulnerabilities, incidents, evidence and users.
           - **Repository layout aligned with the architecture docs**: every repository and repository interface now lives in its own file; read-only queries use ``AsNoTracking``.
           - **Coverage quality gate** in CI (``$env:COVERAGE_THRESHOLD%`` line coverage minimum) and published coverage summary.
+
+          ```
+          $coverageSummary
+          ```
 
           ---
 
@@ -330,6 +337,7 @@ jobs:
             SHA256SUMS.txt
             RELEASE_NOTES.md
             TEST_SUMMARY.txt
+            COVERAGE.txt
             TestResults/**/coverage.cobertura.xml
           if-no-files-found: error
 
