@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace SOCpit.TestSupport.Fakes
 {
     /// <summary>Common behaviour for in-memory repository fakes.</summary>
-    public abstract class InMemoryRepositoryBase<T>
+    public abstract class InMemoryRepositoryBase<T> where T : class
     {
         private readonly Func<T, string> _idSelector;
 
