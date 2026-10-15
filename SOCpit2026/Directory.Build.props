@@ -2,9 +2,9 @@
 <Project>
   <PropertyGroup>
     <!-- Versioning -->
-    <Version>2026.10.11</Version>
-    <FileVersion>2026.10.11.0</FileVersion>
-    <AssemblyVersion>2026.10.11.0</AssemblyVersion>
+    <Version>2026.10.15</Version>
+    <FileVersion>2026.10.15.0</FileVersion>
+    <AssemblyVersion>2026.10.15.0</AssemblyVersion>
 
     <!-- Language & Nullability -->
     <LangVersion>latest</LangVersion>

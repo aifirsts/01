@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Date-based Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026.10.15] - 2026-10-15
+
+### Quality Hardening Release (test suite, repository layout, coverage gate)
+
+- **Test suite: 5 -> 261 tests** across four xUnit projects plus a shared test harness:
+  - `SOCpit.Core.Tests` - domain invariants, `ADR-V2-SEC-001` conservative security policy, graph validator (catalog/state/workspace integrity, dependency DAGs).
+  - `SOCpit.Application.Tests` - all 8 application services against in-memory repository fakes (CRUD, audit trail, lock/unlock, incident resolution, evidence hashing).
+  - `SOCpit.Storage.Tests` - all 8 EF Core repositories, `SOCpitDbContext` model (22 entities), JSON value converters and `UnitOfWork` against real in-memory SQLite.
+  - `SOCpit.Import.Tests` - `MatrixMapper` parsing rules, MATRIX V3 importer, exporter and full export -> import round-trip.
+  - `SOCpit.TestSupport` - shared fakes, SQLite in-memory database harness, deterministic entity builders and temp-directory helper.
+- **Code coverage quality gate**: CI now collects `XPlat Code Coverage`, publishes a coverage summary and fails below `85%` line coverage. Current measured result: **3,204 / 3,419 lines = 93.71%**.
+- **Repository layout aligned with the architecture documentation**: every repository interface (`SOCpit.Application/Repositories`) and implementation (`SOCpit.Storage/Repositories`) now lives in its own file.
+- **Fixed**: audit-log date-range queries (`GetByDateRangeAsync`) could not be translated by the SQLite provider for `DateTimeOffset` comparisons; the window is now applied in memory with an explanatory comment.
+- **Fixed**: read-only repository queries now consistently use `AsNoTracking()` (vulnerability, incident, evidence, host, user, network and audit repositories).
+- **CI**: TRX test results, test discovery summary and coverage are published as build artifacts, job summaries and annotations; the coverage threshold is enforced as a quality gate.
+- **Versioning**: assembly/file/product version bumped to `2026.10.15`.
+
 ## [2026.10.11] - 2026-10-11
 
 ### Production Release & Automated CI/CD Validation

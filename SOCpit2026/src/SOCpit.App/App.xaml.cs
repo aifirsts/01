@@ -251,7 +251,7 @@ namespace SOCpit.App
 
             dbContext.AuditLogs.AddRange(
                 AuditLog.Create("audit-001", "Initialize", "Workspace", "socpit-2026", "NEO",
-                    now.AddMinutes(-30), "Initialized SOCpit v2026.10.11 database with ADR-V2-SEC-001 policy"),
+                    now.AddMinutes(-30), "Initialized SOCpit v2026.10.15 database with ADR-V2-SEC-001 policy"),
                 AuditLog.Create("audit-002", "Import", "MATRIX", "matrix-v3", "NEO",
                     now.AddMinutes(-15), "Synchronized infrastructure assets and security controls from MATRIX V3")
             );

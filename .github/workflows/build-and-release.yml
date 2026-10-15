@@ -19,6 +19,8 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  SOCPIT_VERSION: '2026.10.15'
+  COVERAGE_THRESHOLD: '85'
 
 jobs:
   build-and-release:
@@ -45,9 +47,174 @@ jobs:
         working-directory: SOCpit2026
         run: dotnet build SOCpit.sln --configuration Release --no-restore
 
-      - name: Run unit tests
+      - name: Discover test suite
         working-directory: SOCpit2026
-        run: dotnet test SOCpit.sln --configuration Release --no-build --verbosity normal
+        shell: pwsh
+        run: |
+          $listOutput = dotnet test SOCpit.sln --configuration Release --no-build --list-tests
+          $tests = $listOutput | Where-Object { $_ -match '^SOCpit\.[A-Za-z0-9_.]+$' }
+          "Discovered $(($tests | Measure-Object).Count) tests:" | Tee-Object -FilePath ../TEST_SUMMARY.txt
+          $tests | Sort-Object | ForEach-Object { "  $_" } | Tee-Object -FilePath ../TEST_SUMMARY.txt -Append
+
+      - name: Run unit tests with code coverage
+        id: unit_tests
+        continue-on-error: true
+        working-directory: SOCpit2026
+        run: dotnet test SOCpit.sln --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ../TestResults --logger "trx" --verbosity normal
+
+      - name: Publish test results
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Continue'
+          $root = $env:GITHUB_WORKSPACE
+          $resultsRoot = Join-Path $root 'TestResults'
+
+          $trxFiles = @()
+          if (Test-Path $resultsRoot) {
+            $trxFiles = @(Get-ChildItem -LiteralPath $resultsRoot -Recurse -Filter *.trx -ErrorAction SilentlyContinue)
+          }
+          Write-Host "::notice title=SOCpit trx files::found $($trxFiles.Count) TRX file(s) under $resultsRoot"
+
+          $total = 0
+          $passed = 0
+          $failed = 0
+          $other = 0
+          $failureLines = @()
+
+          foreach ($file in $trxFiles) {
+            try {
+              $raw = Get-Content -LiteralPath $file.FullName -Raw
+              $doc = [xml]$raw
+            }
+            catch {
+              Write-Host "::error title=SOCpit trx parse::could not read $($file.Name): $($_.Exception.Message)"
+              continue
+            }
+
+            $results = @()
+            if ($doc.TestRun -and $doc.TestRun.Results -and $doc.TestRun.Results.UnitTestResult) {
+              $results = @($doc.TestRun.Results.UnitTestResult)
+            }
+            Write-Host "::notice title=SOCpit trx parsed::$($file.Name) contains $($results.Count) result(s)"
+
+            foreach ($result in $results) {
+              $total++
+              $outcome = "$($result.outcome)"
+              if ($outcome -eq 'Passed') { $passed++ }
+              elseif ($outcome -eq 'Failed') { $failed++ }
+              else { $other++ }
+
+              if ($outcome -ne 'Passed') {
+                $message = ''
+                try {
+                  if ($result.Output -and $result.Output.ErrorInfo) {
+                    $message = "$($result.Output.ErrorInfo.Message)"
+                  }
+                }
+                catch {
+                  $message = 'no message'
+                }
+                $message = ($message -replace "`r", ' ') -replace "`n", ' | '
+                if ($message.Length -gt 300) { $message = $message.Substring(0, 300) }
+                $failureLines += "$($result.testName) :: $message"
+              }
+            }
+          }
+
+          $report = "Tests: $total total, $passed passed, $failed failed, $other other"
+          $summaryPath = Join-Path $root 'TEST_SUMMARY.txt'
+          try {
+            Set-Content -LiteralPath $summaryPath -Value $report -Encoding utf8
+            if ($failureLines.Count -gt 0) {
+              Add-Content -LiteralPath $summaryPath -Value ($failureLines -join "`n") -Encoding utf8
+            }
+          }
+          catch {
+            Write-Host "::warning title=SOCpit summary::could not write TEST_SUMMARY.txt: $($_.Exception.Message)"
+          }
+
+          if ($env:GITHUB_STEP_SUMMARY) {
+            "### SOCpit test results" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            "| Result | Count |" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            "|---|---|" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            "| Passed | $passed |" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            "| Failed | $failed |" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            "| Total | $total |" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          }
+
+          Write-Host $report
+          Write-Host "::notice title=SOCpit test totals::$report"
+
+          foreach ($line in $failureLines) {
+            $safe = ($line -replace '%', '%25')
+            if ($safe.Length -gt 500) { $safe = $safe.Substring(0, 500) }
+            Write-Host "::error title=SOCpit test failure::$safe"
+          }
+
+          if ($failed -gt 0 -or $other -gt 0) {
+            Write-Host "::error title=SOCpit tests::test suite reported $failed failure(s) and $other inconclusive result(s)"
+            exit 1
+          }
+
+          if ('${{ steps.unit_tests.outcome }}' -ne 'success' -and $total -eq 0) {
+            Write-Host "::error title=SOCpit tests::dotnet test did not run successfully and no TRX results were produced"
+            exit 1
+          }
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: socpit-test-results
+          path: |
+            TEST_SUMMARY.txt
+            TestResults/**/*.trx
+          if-no-files-found: warn
+
+      - name: Coverage quality gate
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Path TestResults -Recurse -Filter coverage.cobertura.xml
+          if (-not $files) {
+            Write-Error "No coverage reports were produced!"
+            exit 1
+          }
+
+          # Union merge: a line counts as covered when any test assembly covered it.
+          $lines = @{}
+          foreach ($file in $files) {
+            [xml]$doc = Get-Content $file.FullName
+            foreach ($package in $doc.coverage.packages.package) {
+              foreach ($class in $package.classes.class) {
+                foreach ($line in $class.lines.line) {
+                  $key = "$($package.name)|$($class.filename)|$($line.number)"
+                  $hit = ([int]$line.hits -gt 0)
+                  if (-not $lines.ContainsKey($key) -or $hit) { $lines[$key] = $hit }
+                }
+              }
+            }
+          }
+
+          $total = ($lines.Keys | Measure-Object).Count
+          $covered = ($lines.Values | Where-Object { $_ } | Measure-Object).Count
+          $coverage = if ($total -gt 0) { [math]::Round(($covered / $total) * 100, 2) } else { 0 }
+
+          "## SOCpit code coverage" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "| Metric | Value |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "|---|---|" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "| Lines covered | $covered / $total |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "| Line coverage | $coverage% |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "| Threshold | $env:COVERAGE_THRESHOLD% |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
+          "Line coverage: $covered / $total = $coverage% (threshold $env:COVERAGE_THRESHOLD%)"
+          Write-Host "::notice title=SOCpit coverage::lines $covered / $total = $coverage% (threshold $env:COVERAGE_THRESHOLD%)"
+          Set-Content -Path (Join-Path $env:GITHUB_WORKSPACE 'COVERAGE.txt') -Value "Line coverage: $covered / $total = $coverage%" -Encoding UTF8
+
+          if ($coverage -lt [double]$env:COVERAGE_THRESHOLD) {
+            Write-Error "Code coverage $coverage% is below the $env:COVERAGE_THRESHOLD% quality gate"
+            exit 1
+          }
 
       - name: Publish Self-Contained Single-File EXE
         working-directory: SOCpit2026
@@ -61,15 +228,18 @@ jobs:
             -p:EnableCompressionInSingleFile=true `
             -p:DebugType=none `
             -p:DebugSymbols=false `
-            --output ../publish/SOCpit-2026.10.11
+            --output ../publish/SOCpit-${{ env.SOCPIT_VERSION }}
 
       - name: Package Release Archive & Compute Checksums
         shell: pwsh
         run: |
-          Copy-Item "SOCpit2026/README.md" -Destination "publish/SOCpit-2026.10.11/README.md" -Force
-          Copy-Item "SOCpit2026/INSTALL.md" -Destination "publish/SOCpit-2026.10.11/INSTALL.md" -Force
+          $version = $env:SOCPIT_VERSION
+          Copy-Item "SOCpit2026/README.md" -Destination "publish/SOCpit-$version/README.md" -Force
+          Copy-Item "SOCpit2026/INSTALL.md" -Destination "publish/SOCpit-$version/INSTALL.md" -Force
+          Copy-Item "SOCpit2026/CHANGELOG.md" -Destination "publish/SOCpit-$version/CHANGELOG.md" -Force
+          Copy-Item "SOCpit2026/SECURITY.md" -Destination "publish/SOCpit-$version/SECURITY.md" -Force
 
-          $exePath = "publish/SOCpit-2026.10.11/SOCpit.App.exe"
+          $exePath = "publish/SOCpit-$version/SOCpit.App.exe"
           if (-not (Test-Path $exePath)) {
             Write-Error "SOCpit.App.exe was not generated!"
             exit 1
@@ -79,35 +249,60 @@ jobs:
           $exeSize = (Get-Item $exePath).Length
           $exeSizeMB = [math]::Round($exeSize / 1MB, 2)
 
-          Compress-Archive -Path "publish/SOCpit-2026.10.11/*" -DestinationPath "SOCpit-2026.10.11-RELEASE.zip" -Force
+          $zipName = "SOCpit-$version-RELEASE.zip"
+          Compress-Archive -Path "publish/SOCpit-$version/*" -DestinationPath $zipName -Force
 
-          $zipPath = "SOCpit-2026.10.11-RELEASE.zip"
-          $zipHash = (Get-FileHash $zipPath -Algorithm SHA256).Hash
-          $zipSize = (Get-Item $zipPath).Length
+          $zipHash = (Get-FileHash $zipName -Algorithm SHA256).Hash
+          $zipSize = (Get-Item $zipName).Length
           $zipSizeMB = [math]::Round($zipSize / 1MB, 2)
 
           $checksumContent = @(
-            "# SOCpit v2026.10.11 SHA-256 Checksums"
+            "# SOCpit v$version SHA-256 Checksums"
             "# Generated: $(Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ')"
             "$exeHash  SOCpit.App.exe ($exeSize bytes / $exeSizeMB MB)"
-            "$zipHash  SOCpit-2026.10.11-RELEASE.zip ($zipSize bytes / $zipSizeMB MB)"
+            "$zipHash  $zipName ($zipSize bytes / $zipSizeMB MB)"
           ) -join "`n"
 
           Set-Content -Path "SHA256SUMS.txt" -Value $checksumContent -Encoding UTF8
 
-          $releaseNotes = @"
-          # SOCpit v2026.10.11 - Production Ready
+          $testSummary = if (Test-Path "TEST_SUMMARY.txt") { Get-Content "TEST_SUMMARY.txt" -Raw } else { "see workflow log" }
+          $coverageSummary = if (Test-Path "COVERAGE.txt") { (Get-Content "COVERAGE.txt" -Raw).Trim() } else { "see workflow log" }
 
-          **Version**: ``2026.10.11``
-          **Release Date**: ``2026-10-11``
+          $releaseNotes = @"
+          # SOCpit v$version - Production Ready
+
+          **Version**: ``$version``
+          **Release Date**: ``2026-10-15``
           **Status**: ``COMPLETED_WITH_PASS_F`` (12/12 Quality Gates ``PASS-1``)
-          **Platform**: Windows 10/11 (x64) — Self-Contained Single-File EXE (.NET 10.0 bundled)
+          **Platform**: Windows 10/11 (x64) - Self-Contained Single-File EXE (.NET 10.0 bundled)
+
+          ---
+
+          ## What's new in $version
+
+          - **Test suite expanded from 5 to a full four-project suite**: ``SOCpit.Core.Tests``, ``SOCpit.Application.Tests``, ``SOCpit.Storage.Tests``, ``SOCpit.Import.Tests`` plus the shared ``SOCpit.TestSupport`` harness.
+          - **Real SQLite integration tests** for all 8 EF Core repositories, the DbContext model and the UnitOfWork.
+          - **MATRIX V3 import/export round-trip tests** (export -> import -> verify) covering hosts, networks, threats, vulnerabilities, incidents, evidence and users.
+          - **Repository layout aligned with the architecture docs**: every repository and repository interface now lives in its own file; read-only queries use ``AsNoTracking``.
+          - **Coverage quality gate** in CI (``$env:COVERAGE_THRESHOLD%`` line coverage minimum) and published coverage summary.
+
+          ```
+          $coverageSummary
+          ```
+
+          ---
+
+          ## Test Suite
+
+          ```
+          $testSummary
+          ```
 
           ---
 
           ## Quick Start (RU / EN)
 
-          1. **Download / Скачать**: ``SOCpit-2026.10.11-RELEASE.zip``
+          1. **Download / Скачать**: ``$zipName``
           2. **Extract / Распаковать**: Extract to any directory (e.g., ``C:\SOCpit2026\App``)
           3. **Run / Запустить**: Launch ``SOCpit.App.exe`` (no separate .NET runtime installation required)
           4. **Data Storage / Хранение данных**: Automatically initialized at ``C:\SOCpit2026`` (``socpit.db`` & ``logs\``)
@@ -127,7 +322,7 @@ jobs:
 
           | Artifact | Size | SHA-256 |
           |---|---|---|
-          | ``SOCpit-2026.10.11-RELEASE.zip`` | $zipSize bytes ($zipSizeMB MB) | ``$zipHash`` |
+          | ``$zipName`` | $zipSize bytes ($zipSizeMB MB) | ``$zipHash`` |
           | ``SOCpit.App.exe`` | $exeSize bytes ($exeSizeMB MB) | ``$exeHash`` |
           "@
 
@@ -136,28 +331,33 @@ jobs:
       - name: Upload Release Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SOCpit-2026.10.11-RELEASE
+          name: SOCpit-${{ env.SOCPIT_VERSION }}-RELEASE
           path: |
-            SOCpit-2026.10.11-RELEASE.zip
+            SOCpit-${{ env.SOCPIT_VERSION }}-RELEASE.zip
             SHA256SUMS.txt
             RELEASE_NOTES.md
+            TEST_SUMMARY.txt
+            COVERAGE.txt
+            TestResults/**/coverage.cobertura.xml
           if-no-files-found: error
 
-      - name: Publish GitHub Release v2026.10.11
+      - name: Publish GitHub Release
         if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          $tag = "v2026.10.11"
-          $title = "SOCpit v2026.10.11 - Production Ready"
+          $version = $env:SOCPIT_VERSION
+          $tag = "v$version"
+          $title = "SOCpit v$version - Production Ready"
+          $zipName = "SOCpit-$version-RELEASE.zip"
 
           gh release view $tag > $null 2>&1
           if ($LASTEXITCODE -eq 0) {
-            gh release upload $tag "SOCpit-2026.10.11-RELEASE.zip" "SHA256SUMS.txt" --clobber
+            gh release upload $tag $zipName "SHA256SUMS.txt" --clobber
             gh release edit $tag --title $title --notes-file "RELEASE_NOTES.md"
           } else {
-            gh release create $tag "SOCpit-2026.10.11-RELEASE.zip" "SHA256SUMS.txt" `
+            gh release create $tag $zipName "SHA256SUMS.txt" `
               --title $title `
               --notes-file "RELEASE_NOTES.md" `
               --target "${{ github.sha }}"
