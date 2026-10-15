@@ -193,14 +193,14 @@ public class DomainModelValidationTests
     public void NetworkConnection_Create_ClampsNegativeCountersAndValidatesPorts()
     {
         var connection = NetworkConnection.Create(
-            "conn-1", "10.0.0.1", 443, "10.0.0.2", 55000, NetworkProtocol.Tcp,
+            "conn-1", "10.0.0.1", 443, "10.0.0.2", 55000, NetworkProtocol.TCP,
             Now, bytesSent: -5, bytesReceived: -10);
 
         Assert.Equal(0, connection.BytesSent);
         Assert.Equal(0, connection.BytesReceived);
 
-        Assert.Throws<ArgumentException>(() => NetworkConnection.Create("conn-2", "10.0.0.1", 70000, "10.0.0.2", 80, NetworkProtocol.Tcp, Now));
-        Assert.Throws<ArgumentException>(() => NetworkConnection.Create("conn-3", "10.0.0.1", 80, "10.0.0.2", -1, NetworkProtocol.Tcp, Now));
+        Assert.Throws<ArgumentException>(() => NetworkConnection.Create("conn-2", "10.0.0.1", 70000, "10.0.0.2", 80, NetworkProtocol.TCP, Now));
+        Assert.Throws<ArgumentException>(() => NetworkConnection.Create("conn-3", "10.0.0.1", 80, "10.0.0.2", -1, NetworkProtocol.TCP, Now));
     }
 
     [Fact]

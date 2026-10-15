@@ -76,9 +76,9 @@ public class UserServiceTests
         var (service, unitOfWork) = CreateService();
         var user = await service.CreateAsync("analyst", "analyst@socpit.local", "Analyst", UserRole.Analyst, UserStatus.Active, AuthenticationType.Local, new List<string>());
 
-        var updated = await service.UpdateAsync(user.Id, role: UserRole.SecurityEngineer, department: "Threat Intel", updatedBy: "NEO");
+        var updated = await service.UpdateAsync(user.Id, role: UserRole.Investigator, department: "Threat Intel", updatedBy: "NEO");
 
-        Assert.Equal(UserRole.SecurityEngineer, updated.Role);
+        Assert.Equal(UserRole.Investigator, updated.Role);
         Assert.Equal("Threat Intel", updated.Department);
         Assert.Equal("analyst", updated.Username);
         Assert.Contains(unitOfWork.AuditLogsRepo.Entries, a => a.Action == "Update" && a.UserId == "NEO");
