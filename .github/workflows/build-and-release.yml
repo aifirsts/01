@@ -106,12 +106,24 @@ jobs:
           "| Failed | $failed |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
 
           $report = "Tests: $total total, $passed passed, $failed failed"
-          Set-Content -Path ../TEST_SUMMARY.txt -Value $report -Encoding UTF8
-          Add-Content -Path ../TEST_SUMMARY.txt -Value ($failureLines -join "`n") -Encoding UTF8
+          $summaryPath = Join-Path $env:GITHUB_WORKSPACE 'TEST_SUMMARY.txt'
+          Set-Content -Path $summaryPath -Value $report -Encoding UTF8
+          Add-Content -Path $summaryPath -Value ($failureLines -join "`n") -Encoding UTF8
 
           Write-Host $report
+          Write-Host "::notice title=SOCpit test totals::$report"
+
+          $failedNames = $failureLines | ForEach-Object { ($_ -split ' :: ')[0] }
+          if ($failedNames.Count -gt 0) {
+            $nameList = ($failedNames | Select-Object -First 25) -join ', '
+            if ($nameList.Length -gt 900) { $nameList = $nameList.Substring(0, 900) }
+            Write-Host "::notice title=SOCpit failed tests::$nameList"
+          }
+
           foreach ($line in $failureLines) {
-            Write-Host "::error title=SOCpit test failure::$line"
+            $safe = $line -replace '%', '%25'
+            if ($safe.Length -gt 500) { $safe = $safe.Substring(0, 500) }
+            Write-Host "::error title=SOCpit test failure::$safe"
           }
 
           if ($failed -gt 0 -or '${{ steps.unit_tests.outcome }}' -ne 'success') {
