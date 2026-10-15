@@ -1,5 +1,11 @@
 # FINAL COMPLETION SUMMARY - SOCpit Project
 
+> **⚠️ Исторический документ (09.10.2026).** Актуальный статус проекта — **SOCpit `v2026.10.15`**:
+> `261 / 261` тестов проходят, покрытие `93.71%` (гейт CI `85%`), релиз
+> [`v2026.10.15`](https://github.com/aifirsts/01/releases/tag/v2026.10.15).
+> См. [`SOCpit2026/audit/FINAL-VALIDATION-2026-10-15.md`](SOCpit2026/audit/FINAL-VALIDATION-2026-10-15.md)
+> и [`SOCpit2026/CHANGELOG.md`](SOCpit2026/CHANGELOG.md).
+
 **Project**: SOCpit - Security Operations Center  
 **Version**: 2026.10.09  
 **Date**: 2026-10-09  
