@@ -119,6 +119,16 @@ jobs:
             exit 1
           }
 
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: socpit-test-results
+          path: |
+            TEST_SUMMARY.txt
+            TestResults/**/*.trx
+          if-no-files-found: warn
+
       - name: Coverage quality gate
         shell: pwsh
         run: |

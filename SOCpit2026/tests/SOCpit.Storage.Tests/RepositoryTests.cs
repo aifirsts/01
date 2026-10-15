@@ -127,7 +127,8 @@ public class VulnerabilityRepositoryTests
         Assert.Equal("CVE-2026-0001", loaded!.CveId);
         Assert.Single(loaded.References);
 
-        await repository.UpdateAsync(TestData.NewVulnerability(id: "vuln-1", status: VulnerabilityStatus.Fixed));
+        await repository.UpdateAsync(TestData.NewVulnerability(id: "vuln-1", status: VulnerabilityStatus.InProgress));
+        Assert.Single(await repository.GetByStatusAsync(VulnerabilityStatus.InProgress));
         Assert.Single(await repository.GetByStatusAsync(VulnerabilityStatus.Fixed));
 
         Assert.True(await repository.DeleteAsync("vuln-2"));

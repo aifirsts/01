@@ -48,9 +48,16 @@ namespace SOCpit.Storage.Repositories
 
         public async Task<IReadOnlyList<AuditLog>> GetByDateRangeAsync(DateTimeOffset start, DateTimeOffset end, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.AsNoTracking()
-                .Where(a => a.Timestamp >= start && a.Timestamp <= end)
+            // The SQLite provider stores DateTimeOffset as TEXT and cannot translate
+            // range comparisons on it, so the audit window is applied in memory.
+            // Audit events are ordered and bounded by the caller-supplied window.
+            var entries = await _dbSet.AsNoTracking()
                 .ToListAsync(cancellationToken);
+
+            return entries
+                .Where(a => a.Timestamp >= start && a.Timestamp <= end)
+                .OrderBy(a => a.Timestamp)
+                .ToList();
         }
 
         public async Task<int> CountAsync(CancellationToken cancellationToken = default)

@@ -84,11 +84,27 @@ public class SecurityPolicyTests
     [Fact]
     public void ComputeNodeSecurity_FailWinsOverBlocked()
     {
-        var control = TestData.NewControl(targetId: "node-1");
-        var blocked = TestData.NewControlEvidence(id: "cev-blocked", controlId: control.Id, result: EvidenceResult.Blocked);
-        var fail = TestData.NewControlEvidence(id: "cev-fail", controlId: control.Id, result: EvidenceResult.Fail);
+        var blockedControl = TestData.NewControl(id: "ctrl-blocked", targetId: "node-1");
+        var failingControl = TestData.NewControl(id: "ctrl-fail", targetId: "node-1");
 
-        Assert.Equal(Security.Fail, Compute(control, blocked, fail));
+        var blocked = TestData.NewControlEvidence(id: "cev-blocked", controlId: "ctrl-blocked", result: EvidenceResult.Blocked);
+        var fail = TestData.NewControlEvidence(id: "cev-fail", controlId: "ctrl-fail", result: EvidenceResult.Fail);
+
+        Assert.Equal(Security.Fail, SecurityPolicy.ComputeNodeSecurity(
+            "node-1",
+            new[] { blockedControl, failingControl },
+            new[] { blocked, fail },
+            Now));
+    }
+
+    [Fact]
+    public void ComputeNodeSecurity_NewestEvidenceWinsForTheSameControl()
+    {
+        var control = TestData.NewControl(targetId: "node-1");
+        var olderFail = TestData.NewControlEvidence(id: "cev-old", controlId: control.Id, result: EvidenceResult.Fail, observedAt: Now.AddMinutes(-30), validUntil: Now.AddMinutes(30));
+        var newerPass = TestData.NewControlEvidence(id: "cev-new", controlId: control.Id, result: EvidenceResult.Pass, observedAt: Now.AddMinutes(-5), validUntil: Now.AddMinutes(55));
+
+        Assert.Equal(Security.Pass, Compute(control, olderFail, newerPass));
     }
 
     [Fact]
