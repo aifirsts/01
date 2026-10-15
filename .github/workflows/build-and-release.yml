@@ -66,68 +66,99 @@ jobs:
         if: always()
         shell: pwsh
         run: |
-          $trxFiles = Get-ChildItem -Path TestResults -Recurse -Filter *.trx -ErrorAction SilentlyContinue
-          if (-not $trxFiles) {
-            Write-Host '::error title=SOCpit test results::No TRX test result files were produced'
-            exit 0
+          $ErrorActionPreference = 'Continue'
+          $root = $env:GITHUB_WORKSPACE
+          $resultsRoot = Join-Path $root 'TestResults'
+
+          $trxFiles = @()
+          if (Test-Path $resultsRoot) {
+            $trxFiles = @(Get-ChildItem -LiteralPath $resultsRoot -Recurse -Filter *.trx -ErrorAction SilentlyContinue)
           }
+          Write-Host "::notice title=SOCpit trx files::found $($trxFiles.Count) TRX file(s) under $resultsRoot"
 
           $total = 0
           $passed = 0
           $failed = 0
-          $skipped = 0
+          $other = 0
           $failureLines = @()
 
           foreach ($file in $trxFiles) {
-            [xml]$doc = Get-Content $file.FullName
-            foreach ($result in $doc.TestRun.Results.UnitTestResult) {
+            try {
+              $raw = Get-Content -LiteralPath $file.FullName -Raw
+              $doc = [xml]$raw
+            }
+            catch {
+              Write-Host "::error title=SOCpit trx parse::could not read $($file.Name): $($_.Exception.Message)"
+              continue
+            }
+
+            $results = @()
+            if ($doc.TestRun -and $doc.TestRun.Results -and $doc.TestRun.Results.UnitTestResult) {
+              $results = @($doc.TestRun.Results.UnitTestResult)
+            }
+            Write-Host "::notice title=SOCpit trx parsed::$($file.Name) contains $($results.Count) result(s)"
+
+            foreach ($result in $results) {
               $total++
-              switch ($result.outcome) {
-                'Passed'  { $passed++ }
-                'Failed'  { $failed++ }
-                default   { $skipped++ }
-              }
-              if ($result.outcome -ne 'Passed') {
+              $outcome = "$($result.outcome)"
+              if ($outcome -eq 'Passed') { $passed++ }
+              elseif ($outcome -eq 'Failed') { $failed++ }
+              else { $other++ }
+
+              if ($outcome -ne 'Passed') {
                 $message = ''
-                if ($result.Output -and $result.Output.ErrorInfo) {
-                  $message = "$($result.Output.ErrorInfo.Message)"
+                try {
+                  if ($result.Output -and $result.Output.ErrorInfo) {
+                    $message = "$($result.Output.ErrorInfo.Message)"
+                  }
                 }
-                $message = ($message -replace "`r?`n", ' | ')
+                catch {
+                  $message = 'no message'
+                }
+                $message = ($message -replace "`r", ' ') -replace "`n", ' | '
                 if ($message.Length -gt 300) { $message = $message.Substring(0, 300) }
                 $failureLines += "$($result.testName) :: $message"
               }
             }
           }
 
-          "Tests: $total total, $passed passed, $failed failed, $skipped other" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
-          "| Result | Count |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
-          "|---|---|" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
-          "| Passed | $passed |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
-          "| Failed | $failed |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          $report = "Tests: $total total, $passed passed, $failed failed, $other other"
+          $summaryPath = Join-Path $root 'TEST_SUMMARY.txt'
+          try {
+            Set-Content -LiteralPath $summaryPath -Value $report -Encoding utf8
+            if ($failureLines.Count -gt 0) {
+              Add-Content -LiteralPath $summaryPath -Value ($failureLines -join "`n") -Encoding utf8
+            }
+          }
+          catch {
+            Write-Host "::warning title=SOCpit summary::could not write TEST_SUMMARY.txt: $($_.Exception.Message)"
+          }
 
-          $report = "Tests: $total total, $passed passed, $failed failed"
-          $summaryPath = Join-Path $env:GITHUB_WORKSPACE 'TEST_SUMMARY.txt'
-          Set-Content -Path $summaryPath -Value $report -Encoding UTF8
-          Add-Content -Path $summaryPath -Value ($failureLines -join "`n") -Encoding UTF8
+          if ($env:GITHUB_STEP_SUMMARY) {
+            "### SOCpit test results" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            "| Result | Count |" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            "|---|---|" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            "| Passed | $passed |" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            "| Failed | $failed |" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            "| Total | $total |" | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          }
 
           Write-Host $report
           Write-Host "::notice title=SOCpit test totals::$report"
 
-          $failedNames = $failureLines | ForEach-Object { ($_ -split ' :: ')[0] }
-          if ($failedNames.Count -gt 0) {
-            $nameList = ($failedNames | Select-Object -First 25) -join ', '
-            if ($nameList.Length -gt 900) { $nameList = $nameList.Substring(0, 900) }
-            Write-Host "::notice title=SOCpit failed tests::$nameList"
-          }
-
           foreach ($line in $failureLines) {
-            $safe = $line -replace '%', '%25'
+            $safe = ($line -replace '%', '%25')
             if ($safe.Length -gt 500) { $safe = $safe.Substring(0, 500) }
             Write-Host "::error title=SOCpit test failure::$safe"
           }
 
-          if ($failed -gt 0 -or '${{ steps.unit_tests.outcome }}' -ne 'success') {
-            Write-Error "Test suite failed: $report"
+          if ($failed -gt 0 -or $other -gt 0) {
+            Write-Host "::error title=SOCpit tests::test suite reported $failed failure(s) and $other inconclusive result(s)"
+            exit 1
+          }
+
+          if ('${{ steps.unit_tests.outcome }}' -ne 'success' -and $total -eq 0) {
+            Write-Host "::error title=SOCpit tests::dotnet test did not run successfully and no TRX results were produced"
             exit 1
           }
 
