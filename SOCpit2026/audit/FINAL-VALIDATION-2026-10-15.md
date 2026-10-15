@@ -107,13 +107,19 @@ Nothing else is outstanding: every other quality gate is verified by automation 
 
 ---
 
-## 6. Release artifacts
+## 6. Release artifacts (published and verified)
 
-- **Release**: `v2026.10.15` — `SOCpit v2026.10.15 - Production Ready`
-- **Archive**: `SOCpit-2026.10.15-RELEASE.zip`
-- **Executable**: `SOCpit.App.exe` (self-contained, `win-x64`)
-- **Integrity**: `SHA256SUMS.txt` (published with the release)
-- **CI evidence**: `TEST_SUMMARY.txt`, `COVERAGE.txt`, `TestResults/**/coverage.cobertura.xml` (workflow artifacts)
+- **Release**: [`v2026.10.15`](https://github.com/aifirsts/01/releases/tag/v2026.10.15) — `SOCpit v2026.10.15 - Production Ready`
+- **Published**: `2026-10-15T15:20:56Z` (tag created by the release workflow at `main` commit `02ad7d3`)
+- **CI evidence**: `TEST_SUMMARY.txt`, `COVERAGE.txt`, `TestResults/**/coverage.cobertura.xml` (workflow artifacts), plus the full test-suite listing in the release notes
+
+| Artifact | Size | SHA-256 (verified against the GitHub asset digest) |
+|---|---|---|
+| `SOCpit-2026.10.15-RELEASE.zip` | `63,006,854` bytes (`60.09 MB`) | `6010FA317506D1A6C948974ABFCC35D2AD6635FFEF123130B33033578FBB1FCC` |
+| `SOCpit.App.exe` | `68,521,526` bytes (`65.35 MB`) | `F3FB1CDF9758B901A8A787CA896256624F4124D29B9D89355126CDDA48CA34D8` |
+| `SHA256SUMS.txt` | `307` bytes | `8f57e1dda8b3c770d0850118f2a0da04a15ddc393360860c25b3f06e7bfcab8c` |
+
+The archive contains `SOCpit.App.exe` (self-contained single-file executable), `README.md`, `INSTALL.md`, `CHANGELOG.md` and `SECURITY.md`.
 
 ---
 

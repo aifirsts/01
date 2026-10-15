@@ -40,6 +40,16 @@
     "medium_issues": 0,
     "low_issues": 0
   },
+  "release": {
+    "tag": "v2026.10.15",
+    "url": "https://github.com/aifirsts/01/releases/tag/v2026.10.15",
+    "published_at": "2026-10-15T15:20:56Z",
+    "tag_commit": "02ad7d30333d4014f802373ee6a9c01ba1fc68e3",
+    "zip_sha256": "6010FA317506D1A6C948974ABFCC35D2AD6635FFEF123130B33033578FBB1FCC",
+    "exe_sha256": "F3FB1CDF9758B901A8A787CA896256624F4124D29B9D89355126CDDA48CA34D8",
+    "zip_size_bytes": 63006854,
+    "exe_size_bytes": 68521526
+  },
   "ci": {
     "workflow": ".github/workflows/build-and-release.yml",
     "runner": "windows-latest",
