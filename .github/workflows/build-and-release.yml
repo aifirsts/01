@@ -57,8 +57,67 @@ jobs:
           $tests | Sort-Object | ForEach-Object { "  $_" } | Tee-Object -FilePath ../TEST_SUMMARY.txt -Append
 
       - name: Run unit tests with code coverage
+        id: unit_tests
+        continue-on-error: true
         working-directory: SOCpit2026
-        run: dotnet test SOCpit.sln --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ../TestResults --verbosity normal
+        run: dotnet test SOCpit.sln --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ../TestResults --logger "trx" --verbosity normal
+
+      - name: Publish test results
+        if: always()
+        shell: pwsh
+        run: |
+          $trxFiles = Get-ChildItem -Path TestResults -Recurse -Filter *.trx -ErrorAction SilentlyContinue
+          if (-not $trxFiles) {
+            Write-Host '::error title=SOCpit test results::No TRX test result files were produced'
+            exit 0
+          }
+
+          $total = 0
+          $passed = 0
+          $failed = 0
+          $skipped = 0
+          $failureLines = @()
+
+          foreach ($file in $trxFiles) {
+            [xml]$doc = Get-Content $file.FullName
+            foreach ($result in $doc.TestRun.Results.UnitTestResult) {
+              $total++
+              switch ($result.outcome) {
+                'Passed'  { $passed++ }
+                'Failed'  { $failed++ }
+                default   { $skipped++ }
+              }
+              if ($result.outcome -ne 'Passed') {
+                $message = ''
+                if ($result.Output -and $result.Output.ErrorInfo) {
+                  $message = "$($result.Output.ErrorInfo.Message)"
+                }
+                $message = ($message -replace "`r?`n", ' | ')
+                if ($message.Length -gt 300) { $message = $message.Substring(0, 300) }
+                $failureLines += "$($result.testName) :: $message"
+              }
+            }
+          }
+
+          "Tests: $total total, $passed passed, $failed failed, $skipped other" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "| Result | Count |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "|---|---|" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "| Passed | $passed |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          "| Failed | $failed |" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
+          $report = "Tests: $total total, $passed passed, $failed failed"
+          Set-Content -Path ../TEST_SUMMARY.txt -Value $report -Encoding UTF8
+          Add-Content -Path ../TEST_SUMMARY.txt -Value ($failureLines -join "`n") -Encoding UTF8
+
+          Write-Host $report
+          foreach ($line in $failureLines) {
+            Write-Host "::error title=SOCpit test failure::$line"
+          }
+
+          if ($failed -gt 0 -or '${{ steps.unit_tests.outcome }}' -ne 'success') {
+            Write-Error "Test suite failed: $report"
+            exit 1
+          }
 
       - name: Coverage quality gate
         shell: pwsh
