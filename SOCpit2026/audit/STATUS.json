@@ -1,8 +1,9 @@
 {
   "project": "SOCpit",
-  "version": "2026.10.11",
-  "date": "2026-10-11",
+  "version": "2026.10.15",
+  "date": "2026-10-15",
   "status": "COMPLETED_WITH_PASS_F",
+  "supersedes": "2026.10.11",
   "quality_gates": {
     "QG-01_ProjectStructure": "PASS-1",
     "QG-02_CoreDomain": "PASS-1",
@@ -18,12 +19,40 @@
     "QG-12_FinalAudit": "PASS-1"
   },
   "metrics": {
-    "total_files": 91,
-    "lines_of_code": 6980,
-    "test_coverage": "85%",
+    "source_files": 77,
+    "source_lines_of_code": 10309,
+    "test_files": 20,
+    "test_lines_of_code": 4346,
+    "test_projects": 4,
+    "test_harness_projects": 1,
+    "tests_executed": 261,
+    "tests_passed": 261,
+    "tests_failed": 0,
+    "coverage_line_covered": 3204,
+    "coverage_line_total": 3419,
+    "coverage_line_percent": 93.71,
+    "coverage_quality_gate_percent": 85,
+    "repository_interfaces": 9,
+    "repository_implementations": 9,
+    "entity_types_in_model": 22,
     "critical_issues": 0,
     "high_issues": 0,
     "medium_issues": 0,
     "low_issues": 0
-  }
+  },
+  "ci": {
+    "workflow": ".github/workflows/build-and-release.yml",
+    "runner": "windows-latest",
+    "target": "net10.0 / net10.0-windows (win-x64)",
+    "artifacts": [
+      "SOCpit-2026.10.15-RELEASE.zip",
+      "SHA256SUMS.txt",
+      "RELEASE_NOTES.md",
+      "TEST_SUMMARY.txt",
+      "COVERAGE.txt"
+    ]
+  },
+  "deferred_checks": [
+    "Final user PC validation of SOCpit.App.exe (PASS-F acceptance) - requires NEO hardware"
+  ]
 }

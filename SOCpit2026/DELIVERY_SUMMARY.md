@@ -1,5 +1,10 @@
 # SOCpit Delivery Summary
 
+> **Note (2026-10-15):** this document describes the `2026.10.09` delivery. The current delivery is
+> **`2026.10.15`** — see [`audit/FINAL-VALIDATION-2026-10-15.md`](audit/FINAL-VALIDATION-2026-10-15.md)
+> and [`CHANGELOG.md`](CHANGELOG.md). Automated verification as of `2026.10.15`:
+> `261 / 261` tests passing, `93.71%` line coverage (CI gate `85%`).
+
 **Project**: SOCpit - Security Operations Center  
 **Version**: 2026.10.09  
 **Date**: 2026-10-09  
