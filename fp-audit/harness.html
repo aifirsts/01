@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FP Audit Harness — локальные пробы + живые детекторы</title>
+<style>
+  :root{--bg:#0f1117;--card:#171a23;--fg:#e6e8ee;--dim:#9aa2b1;--ok:#3fb950;--bad:#f85149;--warn:#d29922;--acc:#58a6ff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--dim);font-size:13px;margin-bottom:22px}
+  .card{background:var(--card);border:1px solid #232734;border-radius:10px;padding:18px;margin-bottom:18px}
+  h2{font-size:15px;margin:0 0 12px;letter-spacing:.3px;text-transform:uppercase;color:var(--dim)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  td,th{padding:7px 9px;border-bottom:1px solid #232734;text-align:left;vertical-align:top}
+  th{color:var(--dim);font-weight:600}
+  td.k{width:44%;color:var(--dim)}
+  code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  pre{background:#0b0d13;border:1px solid #232734;border-radius:8px;padding:12px;overflow:auto;max-height:340px;font-size:12px}
+  .ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid}
+  .pill.bad{color:var(--bad);border-color:#5c1f1c;background:#2b1210}
+  .pill.ok{color:var(--ok);border-color:#1c3a22;background:#0f2415}
+  .pill.warn{color:var(--warn);border-color:#4a3a12;background:#241f0f}
+  button{background:var(--acc);color:#08121f;border:0;border-radius:8px;padding:9px 14px;font-weight:600;cursor:pointer;font-size:13px}
+  button.sec{background:#22283a;color:var(--fg)}
+  a{color:var(--acc)}
+  .links{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+  .links a{display:block;padding:9px 11px;background:#12151d;border:1px solid #232734;border-radius:8px;text-decoration:none;font-size:13px}
+  .links a:hover{border-color:var(--acc)}
+  .links small{display:block;color:var(--dim);font-size:11px;margin-top:2px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🔍 FP Audit Harness — локальные пробы в браузерной сессии</h1>
+  <div class="sub">Запускается на вашей машине. Собирает те же сигналы, что и публичные детекторы (Canvas, WebGL, Audio, шрифты, WebRTC, UA-CH, webdriver, окружение), показывает таблицу, отдаёт JSON и ведёт на живые онлайн-тесты.</div>
+
+  <div class="card">
+    <div class="row">
+      <button id="run">▶ Запустить пробы</button>
+      <button class="sec" id="copy">Скопировать JSON</button>
+      <button class="sec" id="dl">Скачать JSON</button>
+      <span id="status" class="sub" style="margin:0"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Результаты</h2>
+    <table id="tbl"><tbody><tr><td class="k">—</td><td>нажмите «Запустить пробы»</td></tr></tbody></table>
+  </div>
+
+  <div class="card">
+    <h2>Сырой JSON</h2>
+    <pre id="json">—</pre>
+  </div>
+
+  <div class="card">
+    <h2>Живые онлайн-детекторы (откроются в новой вкладке)</h2>
+    <div class="links">
+      <a href="https://bot-detector.rebrowser.net/" target="_blank">Rebrowser Bot Detector<small>CDP-утечки Puppeteer/Playwright, webdriver, UA-CH</small></a>
+      <a href="https://abrahamjuliot.github.io/creepjs/" target="_blank">CreepJS<small>Lies, like-headless/headless/stealth, V8, Worker</small></a>
+      <a href="https://bot.sannysoft.com/" target="_blank">Sannysoft Antibot<small>Классические флаги Selenium / headless</small></a>
+      <a href="https://bot.incolumitas.com/" target="_blank">Incolumitas Bot Test<small>CDP, тайминги, поведение</small></a>
+      <a href="https://www.browserscan.net/bot-detection" target="_blank">BrowserScan<small>WebDriver-утечки, WebRTC, заголовки</small></a>
+      <a href="https://pixelscan.net/bot-check" target="_blank">Pixelscan<small>Согласованность железо ↔ IP ↔ прокси</small></a>
+      <a href="https://browserleaks.com/" target="_blank">BrowserLeaks<small>Canvas, WebGL, Audio, шрифты, RTCPeerConnection</small></a>
+      <a href="https://tls.peet.ws/api/all" target="_blank">Peet TLS / JA3 / JA4<small>TLS- и HTTP/2-отпечаток</small></a>
+      <a href="https://deviceandbrowserinfo.com/are_you_a_bot" target="_blank">Device &amp; Browser Info<small>Окружение + поведение</small></a>
+      <a href="https://fingerprint-scan.com/" target="_blank">Fingerprint-Scan<small>Утечки и расширения</small></a>
+      <a href="https://iphey.com/" target="_blank">IPhey<small>Trust Score: браузер + IP/DNS</small></a>
+      <a href="https://amiunique.org/" target="_blank">AmIUnique<small>Энтропия против внешней БД</small></a>
+      <a href="https://coveryourtracks.eff.org/" target="_blank">Cover Your Tracks (EFF)<small>Биты энтропии, трекеры</small></a>
+      <a href="https://fingerprint.com/products/bot-detection/" target="_blank">Fingerprint.com Bot Detection<small>Коммерческий detector (демо)</small></a>
+      <a href="https://overpoweredjs.com/" target="_blank">OverpoweredJS<small>36 компонентов отпечатка</small></a>
+      <a href="https://whatleaks.com/" target="_blank">WhatLeaks<small>Дополнительный набор проб</small></a>
+    </div>
+  </div>
+</div>
+
+<script>
+const rows = [];
+const push = (k, v, cls) => rows.push([k, v, cls || '']);
+const fmt = v => typeof v === 'object' ? JSON.stringify(v) : String(v);
+
+function djb2(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(16)}
+
+async function run(){
+  rows.length = 0;
+  const nav = navigator;
+
+  // --- идентичность ---
+  push('User-Agent', nav.userAgent, /Headless/i.test(nav.userAgent) ? 'bad' : 'ok');
+  push('navigator.webdriver', String(nav.webdriver), nav.webdriver ? 'bad' : 'ok');
+  push('window.chrome / chrome.runtime', String(typeof chrome!=='undefined') + ' / ' + String(typeof chrome!=='undefined' && !!chrome.runtime), (typeof chrome!=='undefined' && chrome.runtime) ? 'ok' : 'warn');
+  push('Плагины / mimeTypes', nav.plugins.length + ' / ' + nav.mimeTypes.length, nav.plugins.length ? 'ok' : 'warn');
+  push('Языки', JSON.stringify(nav.languages), /@posix|^$/.test((nav.languages||[]).join(',')) ? 'warn' : 'ok');
+  push('Платформа / vendor', nav.platform + ' / ' + nav.vendor, '');
+  push('Ядра / память / touch', nav.hardwareConcurrency + ' / ' + (nav.deviceMemory ?? 'н/д') + ' ГБ / ' + nav.maxTouchPoints, '');
+  push('pdfViewerEnabled', String(nav.pdfViewerEnabled), nav.pdfViewerEnabled ? 'ok' : 'warn');
+
+  // --- UA-CH ---
+  if (nav.userAgentData) {
+    const he = await nav.userAgentData.getHighEntropyValues(['architecture','bitness','model','platformVersion','uaFullVersion','fullVersionList']).catch(e=>({error:String(e)}));
+    push('UA-CH brands', JSON.stringify(nav.userAgentData.brands), /Headless|Not.?A.?Brand/i.test(JSON.stringify(nav.userAgentData.brands)) ? 'bad' : 'ok');
+    push('UA-CH high entropy', JSON.stringify(he), '');
+  } else push('UA-CH', 'не поддерживается', 'warn');
+
+  // --- экран / окружение ---
+  push('Экран', `${screen.width}×${screen.height} (avail ${screen.availWidth}×${screen.availHeight}), depth ${screen.colorDepth}, DPR ${devicePixelRatio}`, '');
+  push('Окно', `inner ${innerWidth}×${innerHeight}, outer ${outerWidth}×${outerHeight}`, '');
+  push('Ориентация экрана', screen.orientation ? screen.orientation.type : 'н/д', screen.orientation && /^landscape/.test(screen.orientation.type)===false && screen.width>screen.height ? 'warn' : '');
+  push('Часовой пояс / локаль', Intl.DateTimeFormat().resolvedOptions().timeZone + ' / ' + Intl.DateTimeFormat().resolvedOptions().locale, /UTC|Etc/.test(Intl.DateTimeFormat().resolvedOptions().timeZone) ? 'warn' : 'ok');
+  push('Media queries', ['pointer','any-pointer','hover','any-hover','prefers-color-scheme'].map(q=>q+'='+(matchMedia('('+q+')').matches)).join(', '), matchMedia('(pointer: none)').matches ? 'bad' : 'ok');
+  push('Battery', (navigator.getBattery ? await navigator.getBattery().then(b=>`level ${b.level}, charging ${b.charging}`).catch(e=>'ошибка') : 'нет API'), '');
+  push('Медиаустройства', await navigator.mediaDevices?.enumerateDevices?.().then(ds=>ds.length+' шт.').catch(e=>'ошибка') ?? 'нет API', '');
+  push('Память хранилища / JS heap', (navigator.storage?.estimate ? await navigator.storage.estimate().then(e=>Math.round(e.quota/1073741824*100)/100+' ГБ') : 'н/д') + ' / ' + (performance.memory ? Math.round(performance.memory.jsHeapSizeLimit/1048576)+' МБ' : 'н/д'), '');
+  push('Сеть', navigator.connection ? `rtt ${navigator.connection.rtt}, downlink ${navigator.connection.downlink}, ${navigator.connection.effectiveType}` : 'н/д', '');
+
+  // --- Canvas ---
+  let canvasHash = 'ошибка';
+  try {
+    const c = document.createElement('canvas'); c.width = 280; c.height = 60;
+    const g = c.getContext('2d');
+    g.textBaseline='alphabetic'; g.fillStyle='#f60'; g.fillRect(125,1,62,20);
+    g.fillStyle='#069'; g.font='11pt no-real-font-123'; g.fillText('Cwm fjordbank 😀 glyphs, 1234',2,15);
+    g.fillStyle='rgba(102,204,0,0.2)'; g.font='18pt Arial'; g.fillText('Cwm fjordbank 😀 glyphs, 1234',4,45);
+    canvasHash = djb2(c.toDataURL());
+  } catch(e){ canvasHash = 'ошибка: '+e; }
+  push('Canvas 2D (djb2)', canvasHash, '');
+
+  // --- WebGL ---
+  try {
+    const gl = document.createElement('canvas').getContext('webgl');
+    if (!gl) push('WebGL', 'контекст недоступен', 'bad');
+    else {
+      const d = gl.getExtension('WEBGL_debug_renderer_info');
+      push('WebGL vendor', d ? gl.getParameter(d.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR), '');
+      push('WebGL renderer', d ? gl.getParameter(d.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER), /SwiftShader|llvmpipe|ANGLE \(Google/i.test(d?gl.getParameter(d.UNMASKED_RENDERER_WEBGL):'') ? 'warn' : 'ok');
+      push('WebGL версия / расширения', gl.getParameter(gl.VERSION) + ' / ' + (gl.getSupportedExtensions()||[]).length, '');
+    }
+  } catch(e){ push('WebGL', 'исключение: '+e, 'bad'); }
+  push('WebGPU', 'gpu' in navigator ? (navigator.gpu ? 'есть navigator.gpu' : 'нет') : 'нет', '');
+
+  // --- Audio ---
+  try {
+    const AC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    const ctx = new AC(1, 44100, 44100);
+    const osc = ctx.createOscillator(); osc.type='triangle'; osc.frequency.value=10000;
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value=-50; comp.knee.value=40; comp.ratio.value=12; comp.attack.value=0; comp.release.value=0.25;
+    osc.connect(comp); comp.connect(ctx.destination); osc.start(0);
+    const buf = await ctx.startRendering(); const d = buf.getChannelData(0);
+    let sum = 0; for (let i=4500;i<5000;i++) sum += Math.abs(d[i]);
+    push('Audio (OfflineAudioContext)', sum.toString(), '');
+  } catch(e){ push('Audio', 'ошибка: '+e, 'warn'); }
+
+  // --- Шрифты ---
+  try {
+    const test = ['Arial','Times New Roman','Courier New','Georgia','Verdana','Tahoma','Trebuchet MS','Impact','Comic Sans MS','Calibri','Consolas','DejaVu Sans','Liberation Sans','Noto Sans','Roboto','Segoe UI','Menlo','Monaco'];
+    const base = ['monospace','serif','sans-serif'];
+    const span = document.createElement('span');
+    span.style.cssText = 'font-size:72px;position:absolute;left:-9999px'; span.textContent='mmmmmmmmmmlli';
+    document.body.appendChild(span);
+    const refs = {}; base.forEach(b=>{span.style.fontFamily=b; refs[b]=[span.offsetWidth,span.offsetHeight]});
+    const found = test.filter(f=>base.some(b=>{span.style.fontFamily=`'${f}',${b}`; return span.offsetWidth!==refs[b][0]||span.offsetHeight!==refs[b][1]}));
+    span.remove();
+    push('Шрифты', found.length+' из '+test.length+' → '+found.join(', '), found.length<=2 ? 'bad' : 'ok');
+  } catch(e){ push('Шрифты','ошибка: '+e,'warn') }
+
+  // --- WebRTC утечки ---
+  try {
+    const cands = await new Promise(res=>{
+      const pc = new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+      const out=[]; let done=false;
+      pc.onicecandidate = e => { if(e.candidate) out.push(e.candidate.candidate); else if(!done){done=true;res(out);} };
+      pc.createDataChannel('x'); pc.createOffer().then(o=>pc.setLocalDescription(o));
+      setTimeout(()=>{if(!done){done=true;try{pc.close()}catch(_){}res(out)}},4000);
+    });
+    const host = cands.filter(c=>/typ host/.test(c));
+    const srflx = cands.filter(c=>/typ srflx/.test(c));
+    const ipv4 = cands.join(' ').match(/\b\d{1,3}(?:\.\d{1,3}){3}\b/g);
+    const mdns = /\b[a-f0-9-]{20,}\.local\b/i.test(cands.join(' '));
+    push('WebRTC кандидаты', cands.length+' (host '+host.length+', srflx '+srflx.length+')', '');
+    push('WebRTC IP-утечка', (ipv4 ? 'НАЙДЕН IP: '+ipv4.join(', ') : (mdns ? 'нет (mDNS-обфускация)' : 'нет')), ipv4 ? 'bad' : 'ok');
+  } catch(e){ push('WebRTC','ошибка: '+e,'warn') }
+
+  // --- Тестовые страницы-триггеры (для Rebrowser) ---
+  window.dummyFn = () => 'ok';
+  push('window.dummyFn()', (()=>{try{return String(window.dummyFn())}catch(e){return 'ошибка'}})(), 'ok');
+
+  // --- Permissions ---
+  try {
+    const perms = await Promise.all(['geolocation','notifications','camera','microphone'].map(async n=>{
+      try { const s = await navigator.permissions.query({name:n}); return n+'='+s.state } catch(e){ return n+'=н/д' } }));
+    push('Permissions API', perms.join(', '), /notifications=default/.test(perms.join(',')) ? 'ok' : 'warn');
+  } catch(e){ push('Permissions API','ошибка: '+e,'') }
+
+  render();
+}
+
+function render(){
+  const tb = document.querySelector('#tbl tbody');
+  tb.innerHTML = rows.map(([k,v,c])=>`<tr><td class="k">${k}</td><td class="${c}">${String(v).replace(/[<>&]/g, m=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[m]))}</td></tr>`).join('');
+  const obj = {}; rows.forEach(([k,v])=>obj[k]=v);
+  const payload = { generatedAt:new Date().toISOString(), userAgent:navigator.userAgent, results:obj };
+  window.__fpJson = JSON.stringify(payload,null,2);
+  document.getElementById('json').textContent = window.__fpJson;
+}
+
+document.getElementById('run').onclick = async ()=>{
+  document.getElementById('status').textContent = 'выполняется…';
+  await run();
+  document.getElementById('status').textContent = 'готово: '+rows.length+' сигналов · '+new Date().toLocaleTimeString();
+};
+document.getElementById('copy').onclick = async ()=>{ if(!window.__fpJson) return; await navigator.clipboard.writeText(window.__fpJson); document.getElementById('status').textContent='JSON скопирован'; };
+document.getElementById('dl').onclick = ()=>{
+  if(!window.__fpJson) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([window.__fpJson],{type:'application/json'}));
+  a.download = 'fp-harness-' + Date.now() + '.json'; a.click();
+};
+</script>
+</body>
+</html>

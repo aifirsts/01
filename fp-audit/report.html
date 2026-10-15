@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Отпечаток агентской браузерной сессии — аудит 15.10.2026</title>
+<style>
+  :root{--bg:#0e1016;--card:#161a23;--fg:#e7e9ef;--dim:#99a1b0;--ok:#3fb950;--bad:#f85149;--warn:#d29922;--acc:#58a6ff;--line:#242938}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:34px 22px 80px}
+  header h1{font-size:26px;margin:0 0 6px}
+  header .meta{color:var(--dim);font-size:13.5px;margin-bottom:26px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:20px}
+  h2{font-size:16px;margin:0 0 14px;text-transform:uppercase;letter-spacing:.4px;color:var(--dim)}
+  h3{font-size:15px;margin:20px 0 8px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:6px 0 4px}
+  th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{color:var(--dim);font-weight:600;background:#12151d}
+  td.k{color:var(--dim);width:30%}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:#0b0e14;padding:1px 5px;border-radius:4px}
+  .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .stat{background:#12151d;border:1px solid var(--line);border-radius:10px;padding:16px}
+  .stat .num{font-size:28px;font-weight:700;line-height:1.1}
+  .stat .lbl{color:var(--dim);font-size:12.5px;margin-top:4px}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;border:1px solid;white-space:nowrap}
+  .pill.bad{color:var(--bad);border-color:#5c1f1c;background:#2b1210}
+  .pill.ok{color:var(--ok);border-color:#1c3a22;background:#0f2415}
+  .pill.warn{color:var(--warn);border-color:#4a3a12;background:#241f0f}
+  .pill.na{color:var(--dim);border-color:#2b3140;background:#141821}
+  .bad-t{color:var(--bad)}.ok-t{color:var(--ok)}.warn-t{color:var(--warn)}
+  .note{border-left:3px solid var(--acc);padding:10px 14px;background:#12161f;border-radius:0 8px 8px 0;color:#cbd2de;font-size:13.5px;margin:14px 0}
+  .figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+  figure{margin:0}
+  figure img{width:100%;border:1px solid var(--line);border-radius:10px;display:block}
+  figcaption{color:var(--dim);font-size:12.5px;margin-top:6px}
+  ul{margin:8px 0;padding-left:22px}
+  li{margin:4px 0}
+  .links a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🔍 Аудит отпечатка агентской браузерной сессии</h1>
+    <div class="meta">15 октября 2026 · Arena.ai Agent Mode · ветка <code>arena/c491e47f-01</code> · репозиторий <code>aifirsts/01</code><br>
+    Объект: Chromium 153.0.8010.0 (headless, сборка <code>@sparticuz/chromium</code>), управляемый по CDP (puppeteer-core 25) · контейнер 2 vCPU / 3.8 GiB / Linux x86_64 / SwiftShader</div>
+  </header>
+
+  <div class="card">
+    <h2>TL;DR</h2>
+    <div class="g">
+      <div class="stat"><div class="num bad-t">88 % / 100 %</div><div class="lbl">CreepJS: like headless / headless. Stealth — <span class="bad-t">0 %</span></div></div>
+      <div class="stat"><div class="num bad-t">true</div><div class="lbl">FPScanner (движок sannysoft): <code>fastBotDetection</code>, 7 флагов high/medium</div></div>
+      <div class="stat"><div class="num ok-t">0</div><div class="lbl">CreepJS Lies — JS-прототипы <b>не</b> подменялись (чистый, не замаскированный профиль)</div></div>
+      <div class="stat"><div class="num ok-t">t13i1615h2</div><div class="lbl">JA4: сетевой уровень — <b>подлинный Chrome</b> (HTTP/2 SETTINGS эталонные)</div></div>
+    </div>
+    <div class="note">Сессия <b>детектируется на 100 %</b> — но не по сети (TLS/HTTP-2 безупречны), а по идентичности: <code>HeadlessChrome</code> в UA и <code>sec-ch-ua</code>, <code>navigator.webdriver = true</code> (в т.ч. внутри iframe), отсутствие <code>window.chrome</code>, 0 плагинов, <code>en-US@posix</code>, <code>UTC</code>, <code>pointer: none</code>, <code>maxTouchPoints = 0</code>, 1 шрифт, WebGL недоступен.</div>
+  </div>
+
+  <div class="card">
+    <h2>Как выполнялись тесты</h2>
+    <p>Все 17 онлайн-доменов из списка недоступны из песочницы (разрешены только <code>github.com</code>, <code>api.github.com</code> / <code>codeload</code>, <code>registry.npmjs.org</code>, <code>pypi.org</code>, <code>files.pythonhosted.org</code>) — <code>curl</code> вернул <code>000</code> для всех. Поэтому тесты прогнаны <b>офлайн, но реальными детекторами</b>:</p>
+    <ul>
+      <li><b>Rebrowser Bot Detector</b> — запущен сам репозиторий (тот же код, что на bot-detector.rebrowser.net).</li>
+      <li><b>CreepJS</b> — собран из исходников (<code>pnpm build</code>) и запущен локально.</li>
+      <li><b>FPScanner</b> — собрана библиотека (движок тестов из секции «Fingerprint Scanner» на bot.sannysoft.com) с локальным сервером-приёмником и расшифровкой отпечатка.</li>
+      <li><b>OverpoweredJS</b> — запущен официальный <code>dist/es5/opjs.min.js</code> (36 компонентов).</li>
+      <li><b>Класс tls.peet.ws</b> — прямой перехват TLS ClientHello и HTTP/2-фреймов собственным сервером (JA3/JA4, SETTINGS, порядок заголовков).</li>
+      <li><b>Класс BrowserLeaks</b> — измерения DOM/API напрямую (Canvas, Audio, шрифты, WebRTC, permissions, media queries).</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Таблица A — статус по каждому сайту и результат</h2>
+    <table>
+      <thead><tr><th>Сайт</th><th>Статус</th><th>Результат</th></tr></thead>
+      <tbody>
+        <tr><td><code>bot-detector.rebrowser.net</code></td><td><span class="pill ok">выполнено</span></td><td>4 🟢 PASS · 2 ⚪ N/A · <b class="bad-t">2 🔴 FAIL</b> (<code>navigatorWebdriver</code>, <code>useragent</code>)</td></tr>
+        <tr><td><code>abrahamjuliot.github.io/creepjs</code></td><td><span class="pill ok">выполнено</span></td><td><b class="bad-t">88 % like headless · 100 % headless · 0 % stealth</b>; Lies 0</td></tr>
+        <tr><td><code>bot.sannysoft.com</code> (движок FPScanner)</td><td><span class="pill ok">выполнено</span></td><td><b class="bad-t">fastBotDetection = true</b>; сработало 7 флагов, 14 чисто</td></tr>
+        <tr><td><code>tls.peet.ws</code> (JA3/JA4/H2)</td><td><span class="pill ok">выполнено локально</span></td><td><b class="ok-t">Сетевой слой чист</b>: JA4 <code>t13i1615h2_…</code>, TLS 1.3, X25519MLKEM768, SETTINGS Chrome-эталон</td></tr>
+        <tr><td><code>browserleaks.com</code></td><td><span class="pill ok">выполнено локально</span></td><td>Canvas <code>11b75067</code>; <b class="bad-t">WebGL: ERROR</b>; шрифтов 1/28; Audio <code>124.0434…</code>; WebRTC — только mDNS</td></tr>
+        <tr><td><code>pixelscan.net</code></td><td><span class="pill warn">частично</span></td><td>Внутренняя согласованность ✅ (Linux/Linux/Linux), но <code>UTC</code> + <code>en-US@posix</code> + датацентр — маркеры; IP-часть недоступна</td></tr>
+        <tr><td><code>overpoweredjs.com</code></td><td><span class="pill ok">выполнено локально</span></td><td>36 компонентов; <code>brands = [Chromium, <b>HeadlessChrome</b>]</code></td></tr>
+        <tr><td><code>bot.incolumitas.com</code></td><td><span class="pill na">недоступно</span></td><td>Закрытый онлайн-сервис; поведенческий класс частично покрыт CreepJS (<code>engine: Blink</code>, resistance)</td></tr>
+        <tr><td><code>browserscan.net</code>, <code>deviceandbrowserinfo.com</code>, <code>fingerprint-scan.com</code></td><td><span class="pill na">недоступно</span></td><td>Эквиваленты покрыты: webdriver-утечки (FPScanner), окружение (таблица C), расширения — 0</td></tr>
+        <tr><td><code>iphey.com</code>, <code>amiunique.org</code>, <code>coveryourtracks.eff.org</code>, <code>fingerprint.com</code></td><td><span class="pill na">недоступно</span></td><td>Требуют внешний IP / внешние БД — заблокировано allowlist</td></tr>
+        <tr><td><code>cside.com</code>, <code>usefoil.com</code></td><td><span class="pill na">недоступно</span></td><td>Коммерческие онлайн-сервисы атрибуции агентов</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Таблица B — детальные результаты</h2>
+
+    <h3>B1. Rebrowser Bot Detector (9 тестов)</h3>
+    <table>
+      <thead><tr><th>Тест</th><th>Оценка</th><th>Комментарий</th></tr></thead>
+      <tbody>
+        <tr><td><code>dummyFn</code></td><td><span class="pill ok">PASS</span></td><td>доступ к объектам главного мира есть</td></tr>
+        <tr><td><code>runtimeEnableLeak</code></td><td><span class="pill ok">PASS</span></td><td>утечка <code>Runtime.Enable</code> не обнаружена</td></tr>
+        <tr><td><code>viewport</code></td><td><span class="pill ok">PASS</span></td><td>1920×1080 ≠ дефолты библиотек автоматизации</td></tr>
+        <tr><td><code>pwInitScripts</code></td><td><span class="pill ok">PASS</span></td><td><code>window.__pwInitScripts</code> отсутствует</td></tr>
+        <tr><td><code>bypassCsp</code></td><td><span class="pill ok">PASS</span></td><td>CSP включён и работает</td></tr>
+        <tr><td><code>sourceUrlLeak</code> / <code>exposeFunctionLeak</code></td><td><span class="pill na">N/A</span></td><td>требуют доп. вызовов (<code>page.exposeFunction</code> не использовался)</td></tr>
+        <tr><td><code>navigatorWebdriver</code></td><td><span class="pill bad">FAIL</span></td><td><code>navigator.webdriver = true</code></td></tr>
+        <tr><td><code>useragent</code></td><td><span class="pill bad">FAIL</span></td><td>«Google Chrome» отсутствует в <code>userAgentData</code> (Chrome for Testing / headless)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>B2. CreepJS</h3>
+    <table>
+      <tbody>
+        <tr><td class="k">FP ID</td><td><code>bb1cd2b447124c9903278b6226ba7c8d9e2fa08b9a5fab2b5ea72f9fad9f8704</code></td></tr>
+        <tr><td class="k">FuzzyFingerprint</td><td><code>837ff238562c8e048d994cf23ffdbd38fff5b8ecffdc84f8ed29000000000000</code></td></tr>
+        <tr><td class="k">Lies</td><td><b class="ok-t">0</b> (нет подмены прототипов; stealth-флаги все <code>false</code>)</td></tr>
+        <tr><td class="k">Resistance</td><td><code>engine: Blink</code>; privacy/security/mode/extension: <code>unknown</code></td></tr>
+        <tr><td class="k">like-headless флаги (13)</td><td><code>noChrome</code>, <code>hasPermissionsBug</code>, <code>noPlugins</code>, <code>noMimeTypes</code>, <code>notificationIsDenied</code>, <code>hasKnownBgColor</code>, <code>prefersLightColor</code>, <code>pdfIsDisabled</code>, <code>noTaskbar</code>, <code>hasVvpScreenRes</code>, <code>noWebShare</code>, <code>noContentIndex</code>, <code>noContactsManager</code>, <code>noDownlinkMax</code></td></tr>
+        <tr><td class="k">headless флаги (3)</td><td><code>webDriverIsOn</code>, <code>hasHeadlessUA</code>, <b><code>hasHeadlessWorkerUA</code></b> (UA виден и в Worker)</td></tr>
+        <tr><td class="k">platform hints</td><td>Arial · оценки: Windows 1 · Mac 0.91 · Linux 0.91 · ChromeOS 0.73</td></tr>
+      </tbody>
+    </table>
+
+    <h3>B3. FPScanner — «детектировано»</h3>
+    <table>
+      <thead><tr><th>Флаг</th><th>Severity</th></tr></thead>
+      <tbody>
+        <tr><td><code>hasWebdriver</code></td><td><span class="pill bad">high</span></td></tr>
+        <tr><td><code>hasWebdriverWritable</code></td><td><span class="pill bad">high</span></td></tr>
+        <tr><td><code>hasCDP</code></td><td><span class="pill bad">high</span></td></tr>
+        <tr><td><code>hasMissingChromeObject</code></td><td><span class="pill bad">high</span></td></tr>
+        <tr><td><code>hasWebdriverIframe</code> — webdriver внутри iframe</td><td><span class="pill bad">high</span></td></tr>
+        <tr><td><code>hasBotUserAgent</code></td><td><span class="pill bad">high</span></td></tr>
+        <tr><td><code>hasUTCTimezone</code></td><td><span class="pill warn">medium</span></td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--dim);font-size:13.5px">Чисто (14 флагов): <code>hasSeleniumProperty</code>, <code>hasPlaywright</code>, <code>hasImpossibleDeviceMemory</code>, <code>hasHighCPUCount</code>, <code>hasWebdriverWorker</code>, <code>hasMismatchWebGLInWorker</code>, <code>hasMismatchPlatformIframe</code>, <code>hasMismatchPlatformWorker</code>, <code>hasSwiftshaderRenderer</code>, <code>hasMismatchLanguages</code>, <code>hasInconsistentEtsl</code>, <code>hasGPUMismatch</code>, <code>hasPlatformMismatch</code>, <code>headlessChromeScreenResolution</code>.</p>
+    <p style="font-size:13px"><b>FSID:</b> <code>FS1_011010001100000100100_11010h02ba_1920x1080c02m04b00000h-3747f_…_en1tUTC_h2cea_…</code></p>
+
+    <h3>B4. Сетевой уровень (перехват TLS + HTTP/2)</h3>
+    <table>
+      <tbody>
+        <tr><td class="k">TLS / ALPN</td><td>TLSv1.3 · <code>TLS_AES_256_GCM_SHA384</code> · ALPN <code>h2</code> (и <code>http/1.1</code> по запросу)</td></tr>
+        <tr><td class="k">JA4</td><td><code>tt13i1615h2_f0a184148aaa_44ad223425a7</code> — структура подлинного Chrome</td></tr>
+        <tr><td class="k">JA3</td><td>Меняется от соединения к соединению (GREASE + случайный порядок расширений) — стабильна только JA4-часть <code>t13i1615h2</code></td></tr>
+        <tr><td class="k">Шифры / расширения</td><td>16 / 17, GREASE присутствует</td></tr>
+        <tr><td class="k">Key share</td><td><code>0x11ec</code> = <b>X25519MLKEM768</b> (постквантовый гибрид, признак Chrome 15x)</td></tr>
+        <tr><td class="k">HTTP/2 SETTINGS</td><td><code>1:65536, 2:0, 4:6291456, 6:262144</code> — <b>эталон Chrome</b>, далее WINDOW_UPDATE → HEADERS (flags 0x25)</td></tr>
+        <tr><td class="k">Порядок заголовков</td><td><code>Host · Connection · sec-ch-ua · sec-ch-ua-mobile · sec-ch-ua-platform · Upgrade-Insecure-Requests · UA · Accept · Sec-Fetch-Site · Sec-Fetch-Mode · Sec-Fetch-User · Sec-Fetch-Dest · Accept-Encoding</code> — канонический</td></tr>
+        <tr><td class="k">Sec-Fetch-*</td><td>Логика корректна (<code>none/navigate/?1/document</code>) — нарушения нет</td></tr>
+        <tr><td class="k">sec-ch-ua</td><td><code>"HeadlessChrome";v="153", "Not_A Brand";v="8", "Chromium";v="153"</code> <span class="pill bad">маркер</span></td></tr>
+        <tr><td class="k">SNI</td><td>отсутствует (запрос по IP-адресу)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Таблица C — сводный профиль сессии</h2>
+    <table>
+      <thead><tr><th>Слой</th><th>Сигнал</th><th>Значение</th><th>Оценка</th></tr></thead>
+      <tbody>
+        <tr><td>Сеть</td><td>TLS/JA4, HTTP/2, порядок заголовков, Sec-Fetch</td><td>подлинный Chrome</td><td><span class="pill ok">чисто</span></td></tr>
+        <tr><td>Сеть</td><td><code>sec-ch-ua</code> / UA</td><td><b>HeadlessChrome</b></td><td><span class="pill bad">критично</span></td></tr>
+        <tr><td>Браузер</td><td><code>navigator.webdriver</code></td><td><b>true</b>, в том числе в iframe</td><td><span class="pill bad">критично</span></td></tr>
+        <tr><td>Браузер</td><td><code>window.chrome</code> / <code>chrome.runtime</code></td><td>отсутствуют</td><td><span class="pill bad">high</span></td></tr>
+        <tr><td>Браузер</td><td>Плагины / mimeTypes / pdfViewer</td><td>0 / 0 / false</td><td><span class="pill bad">маркер</span></td></tr>
+        <tr><td>Браузер</td><td>CDP-артефакты, Lies</td><td>не обнаружены / 0</td><td><span class="pill ok">чисто</span></td></tr>
+        <tr><td>Железо</td><td>WebGL / GPU</td><td><b>недоступен</b> (SwiftShader не поднимается в GPU-процессе)</td><td><span class="pill bad">критично</span></td></tr>
+        <tr><td>Железо</td><td>Шрифты</td><td>1 из 51 (только DejaVu Sans)</td><td><span class="pill bad">сильный маркер</span></td></tr>
+        <tr><td>Железо</td><td>Ядра / RAM / медиа / Battery</td><td>2 / 4 ГБ / 0-0-0 устройств / charging 100 %</td><td><span class="pill warn">VM-профиль</span></td></tr>
+        <tr><td>Окружение</td><td>TZ / локаль / языки</td><td><b>UTC</b> / en-US / <code>en-US@posix</code></td><td><span class="pill bad">маркер</span></td></tr>
+        <tr><td>Окружение</td><td>Указатель / hover</td><td><code>pointer: none</code>, <code>hover: none</code></td><td><span class="pill bad">маркер</span></td></tr>
+        <tr><td>Окружение</td><td>Ориентация при 16:9</td><td><code>portrait-primary</code></td><td><span class="pill warn">несогласованность</span></td></tr>
+        <tr><td>Контексты</td><td>Web Worker UA</td><td>тоже <code>HeadlessChrome</code></td><td><span class="pill bad">маркер</span></td></tr>
+        <tr><td>Сеть (клиент)</td><td>WebRTC</td><td>только mDNS-кандидат, STUN blocked — утечки нет</td><td><span class="pill ok">чисто</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Скриншоты прогонов</h2>
+    <div class="figs">
+      <figure><img src="img/creepjs.png" alt="CreepJS"><figcaption>CreepJS: 88 % like headless, 100 % headless, 0 % stealth; Timezone UTC; Intl en-US; Worker с <code>HeadlessChrome</code> и <code>en-US@posix</code></figcaption></figure>
+      <figure><img src="img/rebrowser.png" alt="Rebrowser Bot Detector"><figcaption>Rebrowser Bot Detector: 🔴 <code>navigatorWebdriver</code> (<code>webdriver = true</code>) и 🔴 <code>useragent</code> (нет «Google Chrome» в <code>userAgentData</code>), остальные — 🟢</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Интерпретация</h2>
+    <ol>
+      <li><b>Это «голый» headless-профиль без маскировки</b> — типичная картина агента, управляющего настоящим Chromium через CDP без <code>rebrowser-patches</code> / <code>patchright</code> / camoufox.</li>
+      <li><b>Дешевле всего детектится идентичность:</b> <code>HeadlessChrome</code> (UA + <code>sec-ch-ua</code> + <code>userAgentData.brands</code>) и <code>navigator.webdriver = true</code>. Это даёт 100 % детект без поведенческой аналитики.</li>
+      <li><b>Сетевой уровень фильтровать бессмысленно</b> — JA4 и HTTP/2 агента неотличимы от браузера пользователя.</li>
+      <li><b>Поведенческий слой в этом тесте не имитировался</b>, но по данным FP-Agent (arXiv 2605.01247) именно он решает задачу: Cloudflare в их замере поймал 1 агента из 7, а поведенческий классификатор — всех 7 (paste-ввод вместо нажатий, дискретные прыжки скролла, клики без траектории курсора).</li>
+      <li><b>Контейнер добавляет вторичные улики:</b> 1 шрифт, <code>pointer: none</code>, UTC, <code>en-US@posix</code>, 0 медиаустройств, WebGL недоступен, battery «на зарядке» — каждая по отдельности нормальна для VM, в сумме дают устойчивый cloud/headless-профиль.</li>
+    </ol>
+  </div>
+
+  <div class="card links">
+    <h2>Артефакты и как воспроизвести</h2>
+    <ul>
+      <li><code>fp-audit/data/01-dom-probes.json</code> — прямые измерения DOM/API</li>
+      <li><code>fp-audit/data/02-creepjs-fingerprint.json</code> — полный <code>window.Fingerprint</code></li>
+      <li><code>fp-audit/data/03-fpscanner-decrypted.json</code> — расшифрованная нагрузка FPScanner</li>
+      <li><code>fp-audit/data/04-overpoweredjs.json</code> — 36 компонентов</li>
+      <li><code>fp-audit/data/05-tls-http1-capture.json</code>, <code>06-tls-http2-capture.json</code> — JA3/JA4, заголовки, SETTINGS</li>
+      <li><code>fp-audit/data/07-creepjs-page.txt</code>, <code>08-fpscanner-page.txt</code> — текстовые отчёты</li>
+    </ul>
+    <p>Для прогона тех же тестов в вашей реальной сессии откройте <a href="harness.html">fp-audit/harness.html</a> — он соберёт сигналы локально и даст ссылки на 16 живых детекторов из списка.</p>
+    <p>Полная методика с командами сборки — в <a href="../FINGERPRINT_AUDIT_2026-10-15.md">FINGERPRINT_AUDIT_2026-10-15.md</a>.</p>
+  </div>
+</div>
+</body>
+</html>

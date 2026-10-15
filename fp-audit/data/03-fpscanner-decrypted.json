@@ -1,0 +1,274 @@
+{
+ "signals": {
+  "automation": {
+   "webdriver": true,
+   "webdriverWritable": true,
+   "selenium": false,
+   "cdp": true,
+   "playwright": false,
+   "navigatorPropertyDescriptors": "00000"
+  },
+  "device": {
+   "cpuCount": 2,
+   "memory": 4,
+   "platform": "Linux x86_64",
+   "screenResolution": {
+    "width": 1920,
+    "height": 1080,
+    "pixelDepth": 24,
+    "colorDepth": 24,
+    "availableWidth": 1920,
+    "availableHeight": 1080,
+    "innerWidth": 1920,
+    "innerHeight": 1080,
+    "hasMultipleDisplays": false
+   },
+   "multimediaDevices": {
+    "speakers": 0,
+    "microphones": 0,
+    "webcams": 0
+   },
+   "mediaQueries": {
+    "prefersColorScheme": "light",
+    "prefersReducedMotion": false,
+    "prefersReducedTransparency": false,
+    "colorGamut": "srgb",
+    "pointer": "none",
+    "anyPointer": "none",
+    "hover": false,
+    "anyHover": false,
+    "colorDepth": 8
+   },
+   "keyboard": {
+    "layout": "",
+    "layoutSize": 0
+   }
+  },
+  "browser": {
+   "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36",
+   "features": {
+    "bitmask": "00001111000101111000111111111",
+    "chrome": false,
+    "brave": false,
+    "applePaySupport": false,
+    "opera": false,
+    "serial": true,
+    "attachShadow": true,
+    "caches": true,
+    "webAssembly": true,
+    "buffer": false,
+    "showModalDialog": false,
+    "safari": false,
+    "webkitPrefixedFunction": true,
+    "mozPrefixedFunction": false,
+    "usb": true,
+    "browserCapture": true,
+    "paymentRequestUpdateEvent": true,
+    "pressureObserver": true,
+    "audioSession": false,
+    "selectAudioOutput": false,
+    "barcodeDetector": false,
+    "battery": true,
+    "devicePosture": true,
+    "documentPictureInPicture": true,
+    "eyeDropper": true,
+    "editContext": true,
+    "fencedFrame": true,
+    "sanitizer": true,
+    "otpCredential": true,
+    "sumPrecise": true
+   },
+   "plugins": {
+    "isValidPluginArray": true,
+    "pluginCount": 0,
+    "pluginNamesHash": "00000000",
+    "pluginConsistency1": "ERROR",
+    "pluginOverflow": true
+   },
+   "extensions": {
+    "bitmask": "00000000",
+    "extensions": []
+   },
+   "highEntropyValues": {
+    "architecture": "x86",
+    "bitness": "64",
+    "brands": [
+     {
+      "brand": "HeadlessChrome",
+      "version": "153"
+     },
+     {
+      "brand": "Not_A Brand",
+      "version": "8"
+     },
+     {
+      "brand": "Chromium",
+      "version": "153"
+     }
+    ],
+    "mobile": false,
+    "model": "",
+    "platform": "Linux",
+    "platformVersion": "",
+    "uaFullVersion": "153.0.8010.0"
+   },
+   "etsl": 33,
+   "maths": "-4c12b63",
+   "toSourceError": {
+    "toSourceError": "TypeError: Cannot read properties of null (reading 'usdfsh')",
+    "hasToSource": false
+   },
+   "ai": {
+    "summarizerAvailability": "ERROR",
+    "summarizerLanguageAvailability": "ERROR"
+   }
+  },
+  "graphics": {
+   "webGL": {
+    "vendor": "ERROR",
+    "renderer": "ERROR"
+   },
+   "webgpu": {
+    "vendor": "INIT",
+    "architecture": "INIT",
+    "device": "INIT",
+    "description": "INIT"
+   },
+   "canvas": {
+    "hasModifiedCanvas": false,
+    "canvasFingerprint": "11b75067"
+   }
+  },
+  "codecs": {
+   "audioCanPlayTypeHash": "688c7345",
+   "videoCanPlayTypeHash": "-126cde82",
+   "audioMediaSourceHash": "-3cbc04a4",
+   "videoMediaSourceHash": "-48c15d34",
+   "rtcAudioCapabilitiesHash": "26a15cc5",
+   "rtcVideoCapabilitiesHash": "2cb32959",
+   "hasMediaSource": true
+  },
+  "locale": {
+   "internationalization": {
+    "timezone": "UTC",
+    "localeLanguage": "en-US"
+   },
+   "languages": {
+    "languages": [
+     "en-US@posix"
+    ],
+    "language": "en-US@posix"
+   }
+  },
+  "contexts": {
+   "iframe": {
+    "webdriver": true,
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36",
+    "platform": "Linux x86_64",
+    "memory": 4,
+    "cpuCount": 2,
+    "language": "en-US@posix"
+   },
+   "webWorker": {
+    "vendor": "NA",
+    "renderer": "NA",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36",
+    "language": "en-US@posix",
+    "platform": "Linux x86_64",
+    "memory": 4,
+    "cpuCount": 2
+   }
+  }
+ },
+ "fsid": "FS1_011010001100000100100_11010h02ba_1920x1080c02m04b00000h-3747f_f00001111000101111000111111111e00000000p1010h-18bc2_0h01b1dd_1h-53968_en1tUTC_h2cea_0110h-5a89e",
+ "nonce": "a8uo2z091mt",
+ "time": 1792072258810,
+ "url": "http://127.0.0.1:3000/",
+ "fastBotDetection": true,
+ "fastBotDetectionDetails": {
+  "headlessChromeScreenResolution": {
+   "detected": false,
+   "severity": "high"
+  },
+  "hasWebdriver": {
+   "detected": true,
+   "severity": "high"
+  },
+  "hasWebdriverWritable": {
+   "detected": true,
+   "severity": "high"
+  },
+  "hasSeleniumProperty": {
+   "detected": false,
+   "severity": "high"
+  },
+  "hasCDP": {
+   "detected": true,
+   "severity": "high"
+  },
+  "hasPlaywright": {
+   "detected": false,
+   "severity": "high"
+  },
+  "hasImpossibleDeviceMemory": {
+   "detected": false,
+   "severity": "high"
+  },
+  "hasHighCPUCount": {
+   "detected": false,
+   "severity": "high"
+  },
+  "hasMissingChromeObject": {
+   "detected": true,
+   "severity": "high"
+  },
+  "hasWebdriverIframe": {
+   "detected": true,
+   "severity": "high"
+  },
+  "hasWebdriverWorker": {
+   "detected": false,
+   "severity": "high"
+  },
+  "hasMismatchWebGLInWorker": {
+   "detected": false,
+   "severity": "high"
+  },
+  "hasMismatchPlatformIframe": {
+   "detected": false,
+   "severity": "high"
+  },
+  "hasMismatchPlatformWorker": {
+   "detected": false,
+   "severity": "high"
+  },
+  "hasSwiftshaderRenderer": {
+   "detected": false,
+   "severity": "low"
+  },
+  "hasUTCTimezone": {
+   "detected": true,
+   "severity": "medium"
+  },
+  "hasMismatchLanguages": {
+   "detected": false,
+   "severity": "low"
+  },
+  "hasInconsistentEtsl": {
+   "detected": false,
+   "severity": "high"
+  },
+  "hasBotUserAgent": {
+   "detected": true,
+   "severity": "high"
+  },
+  "hasGPUMismatch": {
+   "detected": false,
+   "severity": "high"
+  },
+  "hasPlatformMismatch": {
+   "detected": false,
+   "severity": "high"
+  }
+ }
+}

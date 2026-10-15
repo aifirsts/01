@@ -1,0 +1,370 @@
+{
+ "rebrowser": {
+  "detections": [
+   {
+    "type": "dummyFn",
+    "rating": -1,
+    "note": "<code>window.dummyFn()</code> was called! It means you can interact with main world objects.",
+    "msSinceLoad": 31.9
+   },
+   {
+    "type": "sourceUrlLeak",
+    "rating": 0,
+    "note": "Call <code>document.getElementById('detections-json')</code> to test sourceUrl leak.",
+    "msSinceLoad": 1
+   },
+   {
+    "type": "mainWorldExecution",
+    "rating": 0,
+    "note": "Call <code>document.getElementsByClassName('div')</code> to trigger this test. If you did and the test wasn't triggered, then you're running it in an isolated world, which is safe and not detectable.",
+    "msSinceLoad": 1
+   },
+   {
+    "type": "runtimeEnableLeak",
+    "rating": -1,
+    "note": "No leak detected.",
+    "msSinceLoad": 1.3
+   },
+   {
+    "type": "exposeFunctionLeak",
+    "note": "No <code>window.exposedFn</code>. Use <code>page.exposeFunction</code> to trigger this test.",
+    "rating": 0,
+    "msSinceLoad": 1.7
+   },
+   {
+    "type": "navigatorWebdriver",
+    "rating": 1,
+    "debug": "typeof navigator.webdriver = boolean; navigator.webdriver = true",
+    "note": "<code>navigator.webdriver = true</code> indicates that browser is automated. Use <code>--disable-blink-features=AutomationControlled</code> switch for Chrome.",
+    "msSinceLoad": 2.3
+   },
+   {
+    "type": "viewport",
+    "rating": -1,
+    "debug": {
+     "width": 1920,
+     "height": 1080
+    },
+    "note": "Viewport is different from default values used in automation libraries.",
+    "msSinceLoad": 22.1
+   },
+   {
+    "type": "pwInitScripts",
+    "rating": -1,
+    "note": "No <code>window.__pwInitScripts</code> detected.",
+    "msSinceLoad": 22.9
+   },
+   {
+    "type": "useragent",
+    "rating": 1,
+    "debug": {
+     "useragentVersionItems": [
+      {
+       "brand": "Chromium",
+       "version": "153.0.8010.0"
+      }
+     ]
+    },
+    "note": "\n    <div>Google Chrome is not presented in <code>navigator.userAgentData</code>. You might be using Google Chrome for Testing which is a red flag.</div>\n    <div>Try to specify <code>executablePath</code> and use Google Chrome (stable channel).</div>\n    ",
+    "msSinceLoad": 27.2
+   },
+   {
+    "type": "bypassCsp",
+    "rating": -1,
+    "note": "Content Security Policy (CSP) is enabled, it's expected behavior.",
+    "msSinceLoad": 33.3
+   }
+  ],
+  "rows": [
+   [
+    "🟢 dummyFn",
+    "31.9 ms",
+    "window.dummyFn() was called! It means you can interact with main world objects."
+   ],
+   [
+    "⚪️ sourceUrlLeak",
+    "1 ms",
+    "Call document.getElementById('detections-json') to test sourceUrl leak."
+   ],
+   [
+    "⚪️ mainWorldExecution",
+    "1 ms",
+    "Call document.getElementsByClassName('div') to trigger this test. If you did and the test wasn't triggered, then you're running it in an isolated world, which is safe and not detectable."
+   ],
+   [
+    "🟢 runtimeEnableLeak",
+    "1.3 ms",
+    "No leak detected."
+   ],
+   [
+    "⚪️ exposeFunctionLeak",
+    "1.7 ms",
+    "No window.exposedFn. Use page.exposeFunction to trigger this test."
+   ],
+   [
+    "🔴 navigatorWebdriver",
+    "2.3 ms",
+    "navigator.webdriver = true indicates that browser is automated. Use --disable-blink-features=AutomationControlled switch for Chrome.\ntypeof navigator.webdriver = boolean; navigator.webdriver = true"
+   ],
+   [
+    "🟢 viewport",
+    "22.1 ms",
+    "Viewport is different from default values used in automation libraries.\n{\n  \"width\": 1920,\n  \"height\": 1080\n}"
+   ],
+   [
+    "🟢 pwInitScripts",
+    "22.9 ms",
+    "No window.__pwInitScripts detected."
+   ],
+   [
+    "🔴 useragent",
+    "27.2 ms",
+    "Google Chrome is not presented in navigator.userAgentData. You might be using Google Chrome for Testing which is a red flag.\nTry to specify executablePath and use Google Chrome (stable channel).\n{\n  \"useragentVersionItems\": [\n    {\n      \"brand\": \"Chromium\",\n      \"version\": \"153.0.8010.0\"\n    }\n  ]\n}"
+   ],
+   [
+    "🟢 bypassCsp",
+    "33.3 ms",
+    "Content Security Policy (CSP) is enabled, it's expected behavior."
+   ]
+  ]
+ },
+ "creepjs": {
+  "headlessPanel": null,
+  "fpAppShort": "FP ID: bb1cd2b447124c9903278b6226ba7c8d9e2fa08b9a5fab2b5ea72f9fad9f8704 Fuzzy: 837ff238562c8e048d994cf23ffdbd38fff5b8ecffdc84f8ed29000000000000 403.90 ms WebRTC50c051ff host connection: candidate:2180610651 1 udp 2113937151 01b121fb-83e4-4a76-b793-3b4997a9b6c4.local 54399 typ host generation 0 ufrag 9YWj network-cost 999 foundation/ip: type & base ip: 2180610651 blocked sdp capabilities: 979f41d7 stun connection: blocked devices (0): blocked 8.80ms Timezoneaeaa9c59 Coordinated Universal Time UTC -27028684800000 0 3.70ms Intl3ba47749 en-US July at Coordinated Universal Time American English 21 million next year 0 or 1 one 5.60ms Headlessa42d6a2b chromium: true 88% like headless: 520e994d 100% headless: 44172120 0% stealth: 295d4148 platform hints: Arial 0:73:100:91:91 0.30ms Resistanceeb6b354a privacy: unknown security: unknown mode: unknown extension: unknown 94.40ms ServiceWorkerGlobalScope Worker92eed6e0 lang/timezone: en-US@posix ( 1 US dollar ) en-US UTC (0) gpu: unsupported userAgent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36 device: Linux (Linux x86_64) Linux x86_64 cores: 2, ram: 4 userAgentData: Headless",
+  "lies": null,
+  "fpKeys": [
+   "workerScope",
+   "navigator",
+   "windowFeatures",
+   "headless",
+   "htmlElementVersion",
+   "cssMedia",
+   "css",
+   "screen",
+   "media",
+   "canvas2d",
+   "maths",
+   "consoleErrors",
+   "timezone",
+   "clientRects",
+   "offlineAudioContext",
+   "fonts",
+   "lies",
+   "trash",
+   "capturedErrors",
+   "svg",
+   "resistance",
+   "intl",
+   "features"
+  ],
+  "fp": {
+   "audio": null,
+   "headless": {
+    "chromium": true,
+    "likeHeadless": {
+     "noChrome": true,
+     "hasPermissionsBug": true,
+     "noPlugins": true,
+     "noMimeTypes": true,
+     "notificationIsDenied": true,
+     "hasKnownBgColor": true,
+     "prefersLightColor": true,
+     "uaDataIsBlank": false,
+     "pdfIsDisabled": true,
+     "noTaskbar": true,
+     "hasVvpScreenRes": true,
+     "hasSwiftShader": false,
+     "noWebShare": true,
+     "noContentIndex": true,
+     "noContactsManager": true,
+     "noDownlinkMax": true
+    },
+    "headless": {
+     "webDriverIsOn": true,
+     "hasHeadlessUA": true,
+     "hasHeadlessWorkerUA": true
+    },
+    "stealth": {
+     "hasIframeProxy": false,
+     "hasHighChromeIndex": false,
+     "hasBadChromeRuntime": false,
+     "hasToStringProxy": false
+    },
+    "likeHeadlessRating": 88,
+    "headlessRating": 100,
+    "stealthRating": 0,
+    "systemFonts": "Arial",
+    "platformEstimate": [
+     {
+      "Android": 0,
+      "Chrome OS": 0.73,
+      "Windows": 1,
+      "Mac": 0.91,
+      "Linux": 0.91
+     },
+     1
+    ],
+    "$hash": "a42d6a2b860df18842d7bf421328922343cd5806d0b0f3171326912b2bdb453a"
+   },
+   "screen": {
+    "width": 1920,
+    "height": 1080,
+    "availWidth": 1920,
+    "availHeight": 1080,
+    "colorDepth": 24,
+    "pixelDepth": 24,
+    "touch": false,
+    "lied": false,
+    "$hash": "5ccbceb608522b5b5f702ca3ff96bb2a755ca5b9b939d8e6e1f0fef5df2b6506"
+   },
+   "timezone": {
+    "zone": "Coordinated Universal Time",
+    "location": "UTC",
+    "locationMeasured": "UTC",
+    "locationEpoch": -27028684800000,
+    "offset": 0,
+    "offsetComputed": 0,
+    "lied": false,
+    "$hash": "aeaa9c5908f4dbd84d366b756d088da86a0350bf9b6532e4a924df9e3ca52dd0"
+   },
+   "fonts": {
+    "fontFaceLoadFonts": [
+     "\"DejaVu Sans\""
+    ],
+    "apps": [],
+    "emojiSet": [
+     "😀",
+     "🤵‍♂️",
+     "♨",
+     "⚧",
+     "⁉",
+     "ℹ",
+     "🏳️‍⚧️",
+     "🥲",
+     "🧑‍🦰",
+     "🧑‍🤝‍🧑",
+     "⌨",
+     "👩‍❤️‍💋‍👨",
+     "👨‍👩‍👧‍👦",
+     "©",
+     "⚰",
+     "☦",
+     "▶",
+     "⏏",
+     "♀",
+     "⚕",
+     "◼",
+     "▪",
+     "☝"
+    ],
+    "pixelSizeSystemSum": 0.10259874399999999,
+    "lied": false,
+    "$hash": "f936b9a1b06dd8286375714c1934e927cf5f1fff5f85534255c2c80708b518cf"
+   },
+   "features": 10
+  },
+  "bodyText": "FP ID: bb1cd2b447124c9903278b6226ba7c8d9e2fa08b9a5fab2b5ea72f9fad9f8704 Fuzzy: 837ff238562c8e048d994cf23ffdbd38fff5b8ecffdc84f8ed29000000000000 403.90 ms WebRTC50c051ff host connection: candidate:2180610651 1 udp 2113937151 01b121fb-83e4-4a76-b793-3b4997a9b6c4.local 54399 typ host generation 0 ufrag 9YWj network-cost 999 foundation/ip: type & base ip: 2180610651 blocked sdp capabilities: 979f41d7 stun connection: blocked devices (0): blocked 8.80ms Timezoneaeaa9c59 Coordinated Universal Time UTC -27028684800000 0 3.70ms Intl3ba47749 en-US July at Coordinated Universal Time American English 21 million next year 0 or 1 one 5.60ms Headlessa42d6a2b chromium: true 88% like headless: 520e994d 100% headless: 44172120 0% stealth: 295d4148 platform hints: Arial 0:73:100:91:91 0.30ms Resistanceeb6b354a privacy: unknown security: unknown mode: unknown extension: unknown 94.40ms ServiceWorkerGlobalScope Worker92eed6e0 lang/timezone: en-US@posix ( 1 US dollar ) en-US UTC (0) gpu: unsupported userAgent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36 device: Linux (Linux x86_64) Linux x86_64 cores: 2, ram: 4 userAgentData: HeadlessChrome 153 (153.0.8010.0) Linux x86_64 WebGL images: blocked pixels: blocked params (0): blocked exts (0): blocked gpu: blocked 0.00ms Screen5ccbceb6 ...screen: 1920 x 1080 ....avail: 1920 x 1080 touch: false depth: 24|24 viewport: 1920 1920 1920 1080 1080 1080 browser landscape portrait-primary 1 18.10ms Canvas 2df5ae5edb data: c395c58d rendering: textMetrics: 0.017508300781250003 😀🤵‍♂️♨...✌☝☯ 22.90ms Fontsf936b9a1 load (1/51): Like undefined apps: unsupported \"DejaVu Sans\" 0.10259874399999999 😀🤵‍♂️♨...◼▪☝ 3.00ms DOMRectc4c4b540 elems A: 0.26037227672485364 elems B: 0.26037227672485364 range A: 0.26037227672485364 range B: 0.26037227672485364 0.10270127754211426 😀🤵‍♂️♨...◼▪☝ 6.20ms SVGRectcbd2ed1a bBox: 0.0947140625 char: 0.03194479370117188 subs: 0.02084948425292969 text: 0.02084948425292969 0.04900682479858399 😀🤵‍♂️♨...◼▪☝ 18.90ms Audio5143c82f sum: 124.04347776696522 gain: -20.538288116455078 freq: 164539.10749435425 time: 502.59992877283 trap: 0.4117620529868885 unique: 4735 data:f5d91537 copy:f5d91537 values: dfc44fc6 Speech local (0): blocked remote (0): blocked lang (0): blocked default: blocked 0.50ms Mediad0ec3aa6 mimes (10/12): 91101bd8 3.40ms Features: 113-115+ JS/DOM: df08a511 (v114-115) CSS: 379baeb6 (v114-115) Window: eaef5763 (v113-115) 1.80ms CSS Media Queries82b4443b @media: e879c8b5 matchMedia: e879c8b5 touch device: unknown screen query: 1920 x 1080 9.90ms Computed Style4f8a2eb7 keys (1404): 07928f0f system styles: 8d98ebe8 5.70ms Mathc43a763a results: details 0.20ms Error92b51d39 results: details 0.70ms Window330febdd keys (1224): details 0.20ms HTMLElement2be52cf5 keys (347): details 4.80ms Navigator97a88437 properties (80): bae4afd9 dnt: null gpc: unsupported lang: en-US@posix (en-US@posix) mimeTypes (0): blocked permissions (0): a25f4153 "
+ },
+ "probes": {
+  "nav": {
+   "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36",
+   "appVersion": "5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36",
+   "platform": "Linux x86_64",
+   "vendor": "Google Inc.",
+   "webdriver": true,
+   "hardwareConcurrency": 2,
+   "maxTouchPoints": 0,
+   "languages": [
+    "en-US@posix"
+   ],
+   "plugins": 0,
+   "mimeTypes": 0,
+   "pdfViewerEnabled": false,
+   "cookieEnabled": true,
+   "doNotTrack": null,
+   "onLine": true,
+   "webgl_vendor_ua": null
+  },
+  "uaData": null,
+  "chrome": {
+   "hasChrome": false,
+   "runtime": false,
+   "loadTimes": false,
+   "csi": false
+  },
+  "screen": {
+   "width": 1920,
+   "height": 1080,
+   "availWidth": 1920,
+   "availHeight": 1080,
+   "colorDepth": 24,
+   "pixelDepth": 24,
+   "innerWidth": 1920,
+   "innerHeight": 1080,
+   "outerWidth": 1920,
+   "outerHeight": 1080,
+   "devicePixelRatio": 1,
+   "orientation": "portrait-primary"
+  },
+  "tz": {
+   "timezone": "UTC",
+   "offset": 0,
+   "locale": "en-US"
+  },
+  "canvas": {
+   "dataUrlHash": "4b598b73",
+   "length": 13538,
+   "toBlob": true
+  },
+  "webgl": {
+   "available": false
+  },
+  "webrtc": {
+   "candidates": [
+    "candidate:46393553 1 udp 2113937151 084168c6-670f-4710-b4a4-05c5b2909653.local 39395 typ host generation 0 ufrag KhEA network-cost 999"
+   ],
+   "count": 1,
+   "timeout": true
+  },
+  "audio": {
+   "available": true,
+   "sample": "124.04347776696522"
+  },
+  "fonts": {
+   "detected": [
+    "DejaVu Sans"
+   ],
+   "count": 1,
+   "tested": 28
+  },
+  "permissions": [
+   [
+    "geolocation",
+    "prompt"
+   ],
+   [
+    "notifications",
+    "prompt"
+   ],
+   [
+    "clipboard-read",
+    "prompt"
+   ],
+   [
+    "camera",
+    "prompt"
+   ],
+   [
+    "microphone",
+    "prompt"
+   ]
+  ],
+  "mediaDevices": "TypeError: Cannot read properties of undefined (reading 'enumerateDevices')",
+  "battery": "TypeError: navigator.getBattery is not a function",
+  "speechVoices": 0,
+  "webglRendererSpoofCheck": "no-context",
+  "uaCH": {
+   "secChUaSupportedInJS": true
+  }
+ }
+}

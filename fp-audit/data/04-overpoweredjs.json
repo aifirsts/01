@@ -1,0 +1,310 @@
+{
+ "status": "ok",
+ "fp": {
+  "brave": {
+   "likeBrave": false,
+   "isBrave": false,
+   "mode": -1,
+   "braveClues": [
+    false,
+    false,
+    false,
+    false
+   ],
+   "status": 0
+  },
+  "screen": {
+   "status": 0
+  },
+  "screen_width": {
+   "type": "number",
+   "value": 1920,
+   "status": 0
+  },
+  "screen_height": {
+   "type": "number",
+   "value": 1080,
+   "status": 0
+  },
+  "screen_pixelDepth": {
+   "type": "number",
+   "value": 24,
+   "status": 0
+  },
+  "screen_colorDepth": {
+   "type": "number",
+   "value": 24,
+   "status": 0
+  },
+  "screen_availWidth": {
+   "type": "number",
+   "value": 1920,
+   "status": 0
+  },
+  "screen_availHeight": {
+   "type": "number",
+   "value": 1080,
+   "status": 0
+  },
+  "screen_availTop": {
+   "type": "number",
+   "value": 0,
+   "status": 0
+  },
+  "screen_availLeft": {
+   "type": "number",
+   "value": 0,
+   "status": 0
+  },
+  "screen_isExtended": {
+   "type": "boolean",
+   "value": false,
+   "status": 0
+  },
+  "screen_orientationType": "object",
+  "screen_orientation": {
+   "angle": {
+    "type": "number",
+    "value": 0
+   },
+   "type": {
+    "type": "string",
+    "value": "portrait-primary"
+   },
+   "status": 0
+  },
+  "userAgentData": {
+   "status": 0
+  },
+  "userAgentData_architecture": {
+   "type": "string",
+   "value": "x86",
+   "status": 0
+  },
+  "userAgentData_brands": {
+   "type": "array",
+   "value": [
+    "Chromium",
+    "HeadlessChrome"
+   ],
+   "status": 0
+  },
+  "userAgentData_mobile": {
+   "type": "boolean",
+   "value": false,
+   "status": 0
+  },
+  "userAgentData_platform": {
+   "type": "string",
+   "value": "Linux",
+   "status": 0
+  },
+  "userAgentData_bitness": {
+   "type": "string",
+   "value": "64",
+   "status": 0
+  },
+  "userAgentData_fullVersionList": {
+   "type": "object",
+   "value": {
+    "HeadlessChrome": "153.0.8010.0",
+    "Chromium": "153.0.8010.0"
+   },
+   "status": 0
+  },
+  "userAgentData_model": {
+   "type": "string",
+   "value": "",
+   "status": 0
+  },
+  "userAgentData_platformVersion": {
+   "type": "string",
+   "value": "",
+   "status": 0
+  },
+  "userAgentData_uaFullVersion": {
+   "type": "string",
+   "value": "153.0.8010.0",
+   "status": 0
+  },
+  "userAgentData_wow64": {
+   "type": "boolean",
+   "value": false,
+   "status": 0
+  },
+  "jsHeapSizeLimit": {
+   "type": "number",
+   "value": 2190000000,
+   "status": 0
+  },
+  "devicePixelRatio": {
+   "type": "number",
+   "value": 1,
+   "status": 0
+  },
+  "timingResolution": {
+   "status": 0
+  },
+  "timingResolution_smallestInterval": 0.09999999997671694,
+  "timingResolution_secondSmallestInterval": 0.10000000009313226,
+  "getBattery": {
+   "status": 0
+  },
+  "getBattery_level": {
+   "type": "number",
+   "value": 1,
+   "status": 0
+  },
+  "getBattery_charging": {
+   "type": "boolean",
+   "value": true,
+   "status": 0
+  },
+  "getBattery_chargingTime": {
+   "type": "number",
+   "value": 0,
+   "status": 0
+  },
+  "getBattery_dischargingTime": {
+   "type": "infinity",
+   "value": null,
+   "status": 0
+  },
+  "matchMedia": {
+   "status": 0
+  },
+  "matchMedia_mediaQueries": {
+   "(prefers-contrast: high)": false,
+   "(prefers-contrast: more)": false,
+   "(prefers-contrast: low)": false,
+   "(prefers-contrast: less)": false,
+   "(prefers-contrast: forced)": false,
+   "(prefers-contrast: no-preference)": true,
+   "(prefers-contrast: high-contrast)": false,
+   "(prefers-contrast: low-contrast)": false,
+   "(color-gamut: rec2020)": false,
+   "(color-gamut: p3)": false,
+   "(color-gamut: srgb)": true,
+   "(color-gamut: display-p3)": false,
+   "(color-gamut: a98rgb)": false,
+   "(dynamic-range: high)": false,
+   "(dynamic-range: standard)": true,
+   "(dynamic-range: hdr)": false,
+   "(dynamic-range: sdr)": false,
+   "(video-dynamic-range: high)": false,
+   "(video-dynamic-range: standard)": false,
+   "(video-dynamic-range: hdr)": false,
+   "(video-dynamic-range: sdr)": false,
+   "(any-hover: hover)": false,
+   "(any-hover: none)": true,
+   "(any-hover: on-demand)": false,
+   "(any-pointer: none)": true,
+   "(any-pointer: coarse)": false,
+   "(any-pointer: fine)": false,
+   "(any-pointer: hover)": false,
+   "(pointer: none)": true,
+   "(pointer: coarse)": false,
+   "(pointer: fine)": false,
+   "(pointer: hover)": false,
+   "(hover: hover)": false,
+   "(hover: none)": true,
+   "(hover: on-demand)": false,
+   "(update: fast)": true,
+   "(update: slow)": false,
+   "(update: none)": false,
+   "(overflow-block: scroll)": true,
+   "(overflow-block: none)": false,
+   "(overflow-block: optional-paged)": false,
+   "(overflow-block: paged)": false,
+   "(overflow-block: optional-paged-x)": false,
+   "(overflow-block: optional-paged-y)": false,
+   "(overflow-inline: scroll)": true,
+   "(overflow-inline: none)": false,
+   "(overflow-inline: optional-paged)": false,
+   "(overflow-inline: paged)": false,
+   "(overflow-inline: optional-paged-x)": false,
+   "(overflow-inline: optional-paged-y)": false,
+   "(color: 8)": true,
+   "(color: 16)": false,
+   "(color: 256)": false,
+   "(color: 4k)": false,
+   "(color: 8k)": false,
+   "(inverted-colors: inverted)": false,
+   "(inverted-colors: none)": false,
+   "(inverted-colors: no-preference)": false,
+   "(prefers-reduced-motion: reduce)": false,
+   "(prefers-reduced-motion: no-preference)": true,
+   "(prefers-reduced-motion: motion)": false,
+   "(prefers-reduced-transparency: reduce)": false,
+   "(prefers-reduced-transparency: no-preference)": true,
+   "(prefers-reduced-transparency: transparency)": false,
+   "(grid: 0)": true,
+   "(grid: 1)": false,
+   "(grid: 2)": false,
+   "(scripting: none)": false,
+   "(scripting: initial-only)": false,
+   "(scripting: enabled)": true,
+   "(scripting: enabled-only)": false,
+   "(forced-colors: active)": false,
+   "(forced-colors: none)": true,
+   "(display-mode: fullscreen)": false,
+   "(display-mode: standalone)": false,
+   "(display-mode: minimal-ui)": false,
+   "(display-mode: browser)": true,
+   "(display-mode: window)": false,
+   "(aspect-ratio: 1/1)": false,
+   "(aspect-ratio: 16/9)": true,
+   "(aspect-ratio: 16/10)": false,
+   "(aspect-ratio: 4/3)": false,
+   "(aspect-ratio: 8/5)": false,
+   "(aspect-ratio: 5/4)": false,
+   "(aspect-ratio: 5/3)": false,
+   "(aspect-ratio: 3/2)": false,
+   "(aspect-ratio: 16/12)": false,
+   "(aspect-ratio: 3/4)": false,
+   "(aspect-ratio: 9/16)": false,
+   "(aspect-ratio: 10/16)": false,
+   "(aspect-ratio: 3/5)": false,
+   "(aspect-ratio: 2/3)": false,
+   "(aspect-ratio: 12/16)": false,
+   "(resolution: 300dpi)": false,
+   "(resolution: 2dppx)": false,
+   "(resolution: 3dppx)": false,
+   "(prefers-color-scheme: dark)": false,
+   "(prefers-color-scheme: light)": true,
+   "(prefers-color-scheme: no-preference)": false,
+   "(overflow: auto)": false,
+   "(overflow: hidden)": false,
+   "(transform-3d: 0)": false,
+   "(transform-3d: 1)": false,
+   "(device-aspect-ratio: 1/1)": false,
+   "(device-aspect-ratio: 16/9)": true,
+   "(device-aspect-ratio: 16/10)": false,
+   "(device-aspect-ratio: 4/3)": false,
+   "(device-aspect-ratio: 8/5)": false,
+   "(device-aspect-ratio: 5/4)": false,
+   "(device-aspect-ratio: 5/3)": false,
+   "(device-aspect-ratio: 3/2)": false,
+   "(device-aspect-ratio: 16/12)": false,
+   "(device-aspect-ratio: 3/4)": false,
+   "(device-aspect-ratio: 9/16)": false,
+   "(device-aspect-ratio: 10/16)": false,
+   "(device-aspect-ratio: 3/5)": false,
+   "(device-aspect-ratio: 2/3)": false,
+   "(device-aspect-ratio: 12/16)": false,
+   "(device-height: 640px)": false,
+   "(device-height: 768px)": false,
+   "(device-height: 1024px)": false,
+   "(device-width: 320px)": false,
+   "(device-width: 360px)": false,
+   "(device-width: 375px)": false,
+   "(forced-color-adjust: none)": false,
+   "(forced-color-adjust: auto)": false,
+   "(orientation: portrait)": false,
+   "(orientation: landscape)": true,
+   "(scan: progressive)": false,
+   "(scan: interlace)": false,
+   "status": 0
+  }
+ }
+}

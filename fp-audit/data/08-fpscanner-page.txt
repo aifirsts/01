@@ -1,0 +1,111 @@
+🔍 FPScanner Demo
+
+This page collects a browser fingerprint and sends it to the Node.js server for decryption.
+
+✓ Fingerprint received and decrypted by server!
+Decrypted Fingerprint:
+{
+  "signals": {
+    "automation": {
+      "webdriver": true,
+      "webdriverWritable": true,
+      "selenium": false,
+      "cdp": true,
+      "playwright": false,
+      "navigatorPropertyDescriptors": "00000"
+    },
+    "device": {
+      "cpuCount": 2,
+      "memory": 4,
+      "platform": "Linux x86_64",
+      "screenResolution": {
+        "width": 1920,
+        "height": 1080,
+        "pixelDepth": 24,
+        "colorDepth": 24,
+        "availableWidth": 1920,
+        "availableHeight": 1080,
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "hasMultipleDisplays": false
+      },
+      "multimediaDevices": {
+        "speakers": 0,
+        "microphones": 0,
+        "webcams": 0
+      },
+      "mediaQueries": {
+        "prefersColorScheme": "light",
+        "prefersReducedMotion": false,
+        "prefersReducedTransparency": false,
+        "colorGamut": "srgb",
+        "pointer": "none",
+        "anyPointer": "none",
+        "hover": false,
+        "anyHover": false,
+        "colorDepth": 8
+      },
+      "keyboard": {
+        "layout": "",
+        "layoutSize": 0
+      }
+    },
+    "browser": {
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36",
+      "features": {
+        "bitmask": "00001111000101111000111111111",
+        "chrome": false,
+        "brave": false,
+        "applePaySupport": false,
+        "opera": false,
+        "serial": true,
+        "attachShadow": true,
+        "caches": true,
+        "webAssembly": true,
+        "buffer": false,
+        "showModalDialog": false,
+        "safari": false,
+        "webkitPrefixedFunction": true,
+        "mozPrefixedFunction": false,
+        "usb": true,
+        "browserCapture": true,
+        "paymentRequestUpdateEvent": true,
+        "pressureObserver": true,
+        "audioSession": false,
+        "selectAudioOutput": false,
+        "barcodeDetector": false,
+        "battery": true,
+        "devicePosture": true,
+        "documentPictureInPicture": true,
+        "eyeDropper": true,
+        "editContext": true,
+        "fencedFrame": true,
+        "sanitizer": true,
+        "otpCredential": true,
+        "sumPrecise": true
+      },
+      "plugins": {
+        "isValidPluginArray": true,
+        "pluginCount": 0,
+        "pluginNamesHash": "00000000",
+        "pluginConsistency1": "ERROR",
+        "pluginOverflow": true
+      },
+      "extensions": {
+        "bitmask": "00000000",
+        "extensions": []
+      },
+      "highEntropyValues": {
+        "architecture": "x86",
+        "bitness": "64",
+        "brands": [
+          {
+            "brand": "HeadlessChrome",
+            "version": "153"
+          },
+          {
+            "brand": "Not_A Brand",
+            "version": "8"
+          },
+          {
+            "
